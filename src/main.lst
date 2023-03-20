@@ -1,4 +1,4 @@
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE  1
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -14,7 +14,512 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00007 ;==========================================================================
                       00008 
                       02761         LIST
-                      00002 
+                      00002 #include "mimacro.INC"
+                      00001 ;: :::::::::::::::::::::: www.rodrigocarita.com ::::::::::::::::::::::::::::::::::::::
+                      00002 ; Macro de comandos y librerías para el Pic16f877A
+                      00003 ; archivo : mimacro.INC
+                      00004 ; Versión : 1.2
+                      00005 ; ------------------------------------------------------------------------------
+  0000000C            00006 puertoa EQU PORTA
+  0000000D            00007 puertob EQU PORTB
+  0000000E            00008 puertoc EQU PORTC
+  0000000F            00009 puertod EQU PORTD
+  00000010            00010 puertoe EQU PORTE
+                      00011 ;////////////////////////////////////////////
+                      00012 
+                      00013 encender macro pin,puerto
+                      00014     bsf puerto,pin
+                      00015     endm
+                      00016 apagar macro pin,puerto
+                      00017     bcf puerto,pin
+                      00018     endm
+                      00019 setf macro registr0
+                      00020         MOVLW d'255'
+                      00021         MOVWF registr0
+Warning[205]: Found directive in column 1. (endm)
+                      00022 endm    
+                      00023 ;...................................................................................................... 
+                      00024 cargarvalor macro valor,registro
+                      00025         MOVLW valor
+                      00026         MOVWF registro
+Warning[205]: Found directive in column 1. (endm)
+                      00027 endm
+                      00028 
+                      00029 copiarregistro macro registrode,registrohacia
+                      00030         MOVF registrode,0
+                      00031         MOVWF registrohacia
+Warning[205]: Found directive in column 1. (endm)
+                      00032 endm
+                      00033 ;.....................................................................................................  
+                      00034 ;//////////////////////////////////
+                      00035 
+                      00036 
+                      00037 ;//////////////////////////////////////////// compara entre registros y salta si son iguales /////////
+                      00038 csir             macro  registro1,registro2,direcc
+                      00039                          movf   registro2,0
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00040                          subwf  registro1,0
+                      00041                          btfsc  STATUS,Z
+                      00042                          goto   direcc
+Warning[205]: Found directive in column 1. (endm)
+                      00043 endm
+                      00044 ; Compara registro con un valor y se va a la rutina direccion si son iguales
+                      00045 
+                      00046 csi          macro      registro1,valor,direccion
+                      00047                 movlw   valor
+                      00048                  subwf  registro1,0
+                      00049                  btfsc  STATUS,Z
+                      00050                  goto   direccion
+Warning[205]: Found directive in column 1. (endm)
+                      00051 endm
+                      00052 ; Compara registro con un valor y si es que se cumple la condicion Reg>valor se va a la subrutina
+                      00053 mayorque macro registro1,valor ,subrutina
+                      00054                 MOVLW valor
+                      00055                 SUBWF registro1,0
+                      00056                 BTFSC STATUS,C
+                      00057                 GOTO subrutina
+Warning[205]: Found directive in column 1. (endm)
+                      00058 endm
+                      00059 ; Compara registro con un valor y si es que se cumple la condicion Reg<valor se va a la subrutina
+                      00060 menorque macro registro1,valor ,subrutina
+                      00061                 MOVLW valor
+                      00062                 SUBWF registro1,0
+                      00063                 BTFSS STATUS,C
+                      00064                 GOTO subrutina
+Warning[205]: Found directive in column 1. (endm)
+                      00065 endm
+                      00066 ; Compara registro con un valor y si es que se cumple la condicion Reg>valor se va a la subrutina
+                      00067 mayorquereg macro registro1,registro2 ,subrutina
+                      00068                 MOVF registro2,0
+                      00069                 SUBWF registro1,0
+                      00070                 BTFSC STATUS,C
+                      00071                 GOTO subrutina
+Warning[205]: Found directive in column 1. (endm)
+                      00072 endm
+                      00073 ; Compara registro con un valor y si es que se cumple la condicion Reg<valor se va a la subrutina
+                      00074 menorquereg macro registro1,registro2,subrutina
+                      00075                 MOVF registro2,0
+                      00076                 SUBWF registro1,0
+                      00077                 BTFSS STATUS,C
+                      00078                 GOTO subrutina
+Warning[205]: Found directive in column 1. (endm)
+                      00079 endm
+                      00080 
+                      00081 ; /////////////////////////////////// Para display 7 segmentos //////////////////////////////
+                      00082 enviaradisplay macro numnum
+                      00083         MOVLW numnum
+                      00084         CALL TABLAANODO
+                      00085         MOVWF PORTD
+Warning[205]: Found directive in column 1. (endm)
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00086 endm
+                      00087         
+                      00088 enviarcdisplay macro numnum
+                      00089         MOVLW numnum
+                      00090         CALL TABLACATODO
+                      00091         MOVWF PORTD
+Warning[205]: Found directive in column 1. (endm)
+                      00092 endm
+                      00093 
+                      00094 registroadisplay macro numnum
+                      00095         MOVF numnum,0
+                      00096         CALL TABLAANODO
+                      00097         MOVWF PORTD
+Warning[205]: Found directive in column 1. (endm)
+                      00098 endm
+                      00099 
+                      00100 registrocdisplay macro numnum
+                      00101         MOVF numnum,0
+                      00102         CALL TABLACATODO
+                      00103         MOVWF PORTD
+Warning[205]: Found directive in column 1. (endm)
+                      00104 endm
+                      00105 ;...............................................///////////////////////////////////.....................
+                            ..../////////////////////////
+                      00106 on_lib_retardos_ms macro
+                      00107         CALL CONFTMR0TEMP
+Warning[205]: Found directive in column 1. (endm)
+                      00108 endm
+                      00109 
+                      00110 retardo_ms macro valor
+                      00111         MOVLW valor
+                      00112         CALL RETARDOLIBRE_mS
+Warning[205]: Found directive in column 1. (endm)
+                      00113 endm
+                      00114 
+                      00115 ;Conversor de Binario a BCD. La respuesta se guarda en registros bcd_unidad, bcd_decena, bcd_centena
+                      00116 convertir_a_bcd macro registro
+                      00117         MOVF registro,0
+                      00118         CALL binario_a_bcd
+Warning[205]: Found directive in column 1. (endm)
+                      00119 endm
+                      00120 
+                      00121 ;Codigo de macro para Retardos
+                      00122 milisegundo      macro X
+                      00123                          movlw X
+                      00124                          call  milisegundos
+                      00125                          endm
+                      00126 segundo          macro X
+                      00127                          movlw X
+                      00128                          call  segundos
+                      00129                          endm
+                      00130 ;//////////////////////////////////////////////////////////////////////////////
+                      00131 ; Macro para LCD Información sobre comandos en www.rodrigocarita.com
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00132 ; Para controlar la pantalla LCD 2x16
+                      00133 
+                      00134 iniciarlcd macro             ;Con esto desarrollamos la secuencia de inicio               
+                      00135            call  Inicio_lcd
+                      00136            endm
+                      00137 escribir   macro valcaracter       ;Con este comando enviaremos un caracter a la pantalla
+                      00138            movlw valcaracter
+                      00139            call  ESCRIBIRCARACTER  ;Subrutina en la librería que me permite enviar el caracter
+                      00140            endm
+                      00141 escribirreg macro registro4                     ;Con este comando enviaremos el valor de un registro a l
+                            a pantalla
+                      00142                    movlw .48
+                      00143                    addwf registro4,1
+                      00144            movf  registro4,0
+                      00145            call  ESCRIBIRCARACTER   ;Subrutina en la librería que me permite enviar el valor
+                      00146            endm
+                      00147 escribirregistro macro regREG3d     ;Subrutina para escribir en el LCD registro de 3 dígitos
+                      00148                    MOVF regREG3d,0
+                      00149                    CALL PARAESCR1B1RREGISTRO
+Warning[205]: Found directive in column 1. (endm)
+                      00150 endm               
+                      00151            
+                      00152 ;Aquí las macros para manipulación del cursor //////////////////////////////////////////
+                      00153 cursor_on macro
+                      00154                 movlw on_display_cursor_blink ;Enciende el cursor y su parpadeo
+                      00155         CALL  ESCRIBIRCOMANDO
+                      00156                 endm
+                      00157 cursor_off macro
+                      00158                 movlw solo_display        ;Apaga el cursor y muestra solamente el display
+                      00159         CALL  ESCRIBIRCOMANDO
+                      00160                 endm
+                      00161 cursor_izquierda macro
+                      00162                 movlw mover_cursor_izquierda ;Mueve el cursor a la derecha
+                      00163         call  ESCRIBIRCOMANDO
+                      00164                 endm
+                      00165 cursor_derecha macro
+                      00166                 movlw mover_cursor_derecha ;Mueve el cursor a la izquierda
+                      00167         call  ESCRIBIRCOMANDO
+                      00168                 endm
+                      00169            
+                      00170 fila_enter     macro    ;Saltará de línea a la segunda fila
+                      00171            movlw salto_enter
+                      00172            call  ESCRIBIRCOMANDO
+Warning[205]: Found directive in column 1. (endm)
+                      00173 endm
+                      00174 fila_home macro
+                      00175                 movlw home_inicio
+                      00176                 call ESCRIBIRCOMANDO
+Warning[205]: Found directive in column 1. (endm)
+                      00177 endm
+                      00178 ;//////////////////////////////////////////////////////
+                      00179 ;//////////////////////////////////////// creado para la escritura en LCD mediante textos predeterminado
+                            s.///////////
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00180 mensaje macro  x
+                      00181         if x==.1
+                      00182         call SubirCarActer1
+                      00183         endif
+                      00184         if x==.2
+                      00185         call SubirCarActer2
+                      00186         endif
+                      00187                 if x==.3
+                      00188         call SubirCarActer3
+                      00189         endif
+                      00190                 if x==.4
+                      00191         call SubirCarActer4
+                      00192         endif
+                      00193                 if x==.5
+                      00194         call SubirCarActer5
+                      00195         endif
+                      00196                 if x==.6
+                      00197         call SubirCarActer6
+                      00198         endif
+                      00199                 if x>.6
+                      00200                 ERROR "No hay mensaje predeterminado para el valor"
+                      00201                 MESSG "Revisa el comando mensjae .x"
+                      00202                 endif
+                      00203         endm
+                      00204 
+                      00205 ;Se pueden agregar más, respetando la estructura de condicionales
+                      00206 
+                      00207 ;/////////////////////////////////////////////////////////////////////////////////////
+                      00208 
+                      00209 
+                      00210 
+                      00211 ;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+                            \
+                      00212 ;\\\\\\\\\\\\\\\\\\\\\Manipulación del cursor solamente para pantallas de 20x4 /////////////////////////
+                            ///
+                      00213 ;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+                      00214 
+                      00215 ir_a_fila macro filaseleccionada
+                      00216 
+                      00217         if filaseleccionada==1
+                      00218                 movlw home_inicio
+                      00219                 call ESCRIBIRCOMANDO
+                      00220         endif
+                      00221         if filaseleccionada==2
+                      00222                 movlw home_inicio
+                      00223                 call ESCRIBIRCOMANDO
+                      00224                 movlw salto_enter
+                      00225         call ESCRIBIRCOMANDO
+                      00226         endif
+                      00227         if filaseleccionada==3
+                      00228                 movlw 0x94
+                      00229                 call ESCRIBIRCOMANDO
+                      00230         endif
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00231         if filaseleccionada==4
+                      00232                 movlw 0xD4
+                      00233                 call ESCRIBIRCOMANDO
+                      00234         endif
+                      00235         if filaseleccionada>4
+                      00236                 ERROR "Has sobrepasado la cantidad de filas a usar"
+                      00237                 MESSG "Revisa el comando ir_a_fila que el valor sea"
+                      00238                 MESSG "de 1 a 4 solamente."
+                      00239         endif
+Warning[205]: Found directive in column 1. (endm)
+                      00240 endm
+                      00241 
+                      00242 
+                      00243 ; ///////////////////////Comando adicional /////////////////////////////////////////////////////////////
+                            ///////////
+                      00244 ;/////////////////////////////Para ir a un punto especifico del LCD ////////////////////////////////////
+                            //////////
+                      00245 ;/////////////////////////////////Solo para LCD20x4 ////////////////////////////////////////////////////
+                            //////////
+                      00246 lcdfc macro lcdvalorf,lcdvalorc
+                      00247 
+                      00248         ;/// Para seleccionar la fila
+                      00249         if lcdvalorf==1
+                      00250         MOVLW lcdvalorc
+                      00251         MOVWF ubicacionlcdfcr
+                      00252         DECF ubicacionlcdfcr,1
+                      00253         MOVlW 0X80
+                      00254         ADDWF ubicacionlcdfcr,0
+                      00255         call ESCRIBIRCOMANDO
+                      00256         endif
+                      00257         if lcdvalorf==2
+                      00258         MOVLW lcdvalorc
+                      00259         MOVWF ubicacionlcdfcr
+                      00260         DECF ubicacionlcdfcr,1
+                      00261         MOVlW 0XC0
+                      00262         ADDWF ubicacionlcdfcr,0
+                      00263         call ESCRIBIRCOMANDO
+                      00264         endif
+                      00265         if lcdvalorf==3
+                      00266         MOVLW lcdvalorc
+                      00267         MOVWF ubicacionlcdfcr
+                      00268         DECF ubicacionlcdfcr,1
+                      00269         MOVlW 0X94
+                      00270         ADDWF ubicacionlcdfcr,0
+                      00271         call ESCRIBIRCOMANDO
+                      00272         endif
+                      00273         if lcdvalorf==4
+                      00274         MOVLW lcdvalorc
+                      00275         MOVWF ubicacionlcdfcr
+                      00276         DECF ubicacionlcdfcr,1
+                      00277         MOVlW 0XD4
+                      00278         ADDWF ubicacionlcdfcr,0
+                      00279         call ESCRIBIRCOMANDO
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00280         endif
+                      00281         ;Para seleccionar la columna
+                      00282 
+Warning[205]: Found directive in column 1. (endm)
+                      00283 endm
+                      00284 
+                      00285 ;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\               
+                      00286 
+                      00287 ;Desde aquí los comandos para manipulación del display //////////////////////////////////////////
+Warning[207]: Found label after column 1. (borralcd)
+                      00288  borralcd  macro                ;Borra todo lo de la pantalla
+                      00289            movlw limpiar_lcd
+                      00290            call  ESCRIBIRCOMANDO
+                      00291            endm
+Warning[207]: Found label after column 1. (desplazaderecha)
+                      00292  desplazaderecha  macro                 ;Mueve todo lo escrito en la pantalla 1 a la derecha
+                      00293                   movlw  mover_pantalla_derecha
+                      00294                   call   ESCRIBIRCOMANDO             
+                      00295                   endm
+Warning[207]: Found label after column 1. (desplazaizquierda)
+                      00296  desplazaizquierda  macro       ;Mueve todo lo escrito en la pantalla 1 a la izquierda         
+                      00297                                 movlw  mover_pantalla_izquierda
+                      00298                                 call   ESCRIBIRCOMANDO             
+                      00299                                 endm
+Warning[207]: Found label after column 1. (apagarpantalla)
+                      00300  apagarpantalla macro
+                      00301                                 movlw apagar_el_display
+                      00302                                 call ESCRIBIRCOMANDO
+                      00303  endm
+Warning[207]: Found label after column 1. (encenderpantalla)
+                      00304   encenderpantalla macro
+                      00305                                 movlw solo_display
+                      00306                                 call ESCRIBIRCOMANDO
+                      00307  endm
+                      00308  
+                      00309  ;/////////////////////////////////////////////////////////////////////////////////
+                      00310  ;/////////////////////////////////////////////////////////////////////////////////
+                      00311  ;Para enviar 1 pulso de duración programable
+                      00312  ;Requiere de la Librería RETARDOS.ASM
+                      00313  
+Warning[207]: Found label after column 1. (PULSOSUB)
+                      00314  PULSOSUB macro pinp,registrop,duracion
+                      00315                 BSF registrop,pinp
+                      00316                 milisegundo duracion
+                      00317                 BCF registrop,pinp
+                      00318  endm
+                      00319  ;///////////////////// Operaciones matemáticas //////////////////////////////////
+                      00320  ;//////////////////////////////////////////////////////
+                      00321 sumarreg macro registro1,registro2
+                      00322    movf registro1,0
+                      00323    movwf Reg15tr01
+                      00324    movf registro2,0
+                      00325    movwf Reg15tr02
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00326    call Separaciondigit05
+                      00327    call ParaSumarReg1str0s
+Warning[205]: Found directive in column 1. (endm)
+                      00328 endm
+                      00329 
+                      00330 restarreg macro registrox1,registrox2; Hay que asegurarse que el registro 1 sea mayor al registro2.
+                      00331    movf registrox1,0
+                      00332    movwf Reg15tr01
+                      00333    movf registrox2,0
+                      00334    movwf Reg15tr02
+                      00335    call ParaRestarReg1str0s2
+Warning[205]: Found directive in column 1. (endm)
+                      00336 endm
+                      00337  
+                      00338 multiplicarreg macro registrom1,registrom2
+                      00339    movf registrom1,0
+                      00340    movwf Reg15tr01
+                      00341    movf registrom2,0
+                      00342    movwf Reg15tr02
+                      00343    call Separaciondigit05
+                      00344    call ParaMultiplicarReg1str0s
+Warning[205]: Found directive in column 1. (endm)
+                      00345 endm 
+                      00346 
+                      00347 crearreg macro registroc1,registroc2,registroc3
+                      00348    movf registroc1,0
+                      00349    movwf Reg15tr01
+                      00350    movf registroc2,0
+                      00351    movwf Reg15tr02
+                      00352    movf registroc3,0
+                      00353    movwf Reg15tr03
+                      00354    call ParaCrearReg1str0
+Warning[205]: Found directive in column 1. (endm)
+                      00355 endm
+                      00356 
+                      00357 ;///////////////////////////////////////////////////////////////////////////////////////////////////////
+                            /////
+                      00358 ;//////////////////////////////////// Para módulo HC-SR04 //////////////////////////////////////////////
+                            /////
+                      00359 ;///////////////////////////////////////////////////////////////////////////////////////////////////////
+                            /////  
+                      00360 
+                      00361 iniciar_hcsr04  macro
+                      00362         banco 1
+                      00363         MOVLW b'00000111' ; Timer 0 como temporizador y escala 256
+                      00364         MOVWF OPTION_REG  ; Cargamos la configuración en el TMR0
+                      00365         banco 0
+                      00366         BCF TRIGGER
+                      00367         MOVLW .88 ;Cargamos el valor de ajuste de medida 51.2/58 = 0.88
+                      00368     MOVWF Ajust3d1st ;En la variable de ajuste "Ajust3d1st"
+Warning[205]: Found directive in column 1. (endm)
+                      00369 endm
+                      00370 
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00371 medir_ultrasonico macro Rresulm3edid4
+                      00372         CALL Med1rdiist4nc1ia  ;Llama a la subrutina de medición
+                      00373         MOVF valaux04,0        ;Extrae el valor de la respuesta en W 
+                      00374         MOVWF Rresulm3edid4    ;Guarda la respuesta en el indicador de registro 
+Warning[205]: Found directive in column 1. (endm)
+                      00375 endm
+                      00376 
+                      00377 ;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+                      00378  ;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ Para teclado 4x4         \\\\\\\\\\\\\\\\\\\\\\\\\\\\
+                      00379  ;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+                      00380  
+                      00381 iniciar_teclado macro
+                      00382         CALL IN1ci0t3cla4do
+Warning[205]: Found directive in column 1. (endm)
+                      00383 endm
+                      00384 
+                      00385 leertecla macro
+                      00386         BSF Sit3cl4pus,0
+                      00387         CALL Tttest3aTecld0o
+Warning[205]: Found directive in column 1. (endm)
+                      00388 endm
+                      00389 
+                      00390 irsitecla macro subrutdepulso
+                      00391         BCF Sit3cl4pus,0
+                      00392         CALL Tttest3aTecld0o
+                      00393         MOVF tekl4pul5,0
+                      00394         BTFSS Hhayrt3cla,0
+                      00395         GOTO subrutdepulso
+Warning[205]: Found directive in column 1. (endm)
+                      00396 endm
+                      00397 
+                      00398 llamarsitecla macro subrutdepulso
+                      00399         BCF Sit3cl4pus,0
+                      00400         CALL Tttest3aTecld0o
+                      00401         MOVF tekl4pul5,0
+                      00402         BTFSS Hhayrt3cla,0
+                      00403         CALL subrutdepulso
+Warning[205]: Found directive in column 1. (endm)
+                      00404 endm
+                      00405 
+                      00406 ; ///////////////////////////////-------------------------//////////////////////////////////////////////
+                            ////
+                      00407 
+                      00408 
                       00003 ; CONFIG1
                       00004 ; __config 0xFFE4
 Message[303]: Program word too large.  Truncated to core size. (FFE4)
@@ -24,90 +529,454 @@ Message[303]: Program word too large.  Truncated to core size. (FFE4)
                       00007 ; __config 0xFFFF
 Message[303]: Program word too large.  Truncated to core size. (FFFF)
 8008   3FFF           00008         __CONFIG _CONFIG2, _WRT_OFF & _VCAPEN_OFF & _PLLEN_ON & _STVREN_ON & _BORV_LO & _LPBOR_OFF & _LV
-                            P_ON
-                      00009 
-Warning[205]: Found directive in column 1. (CBLOCK)
-                      00010 CBLOCK 0x70 ;Ran comun
-                      00011 
-Warning[205]: Found directive in column 1. (ENDC)
-                      00012 ENDC    
-                      00013 
-                      00014 
-0000                  00015         org 0x0
-0000   2823           00016                 goto Principal
-0004                  00017         org 04
-0004   2825           00018                 goto Interrupcion
-                      00019 
-0005                  00020 Mostrar7Segmentos
-0005   0020           00021         banksel PORTD
-0006   008F           00022         movwf PORTD
-0007   30F0           00023         movlw 0xF0
-0008   008E           00024         movwf PORTC
-0009   0008           00025         return
-                      00026 
-000A                  00027 Control7Segmentos
-000A   0008           00028         return
-                      00029                 
-000B                  00030 ConfigurarPuertos
-                      00031         ; Puertos como E/S digital
-000B   0023           00032         banksel ANSELA  
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-000C   018C           00033         clrf    ANSELA
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-000D   018D           00034         clrf    ANSELB
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-000E   018F           00035         clrf    ANSELD
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE  2
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 10
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00036         ; Configurar purtos 
-000F   0021           00037         banksel TRISD
+                            P_ON
+                      00009 
+Warning[205]: Found directive in column 1. (CBLOCK)
+                      00010 CBLOCK 0x70 ;Ran comun
+  00000070            00011         tecla_presionada
+  00000071            00012         tekl4pul5        ;Registro donde se almacenarï¿½ el valor de la tecla pulsada
+  00000072            00013         c0mpparadD0r ;Registro que serï¿½ el comparador para el escaner de teclado
+  00000073            00014         Sit3cl4pus     ;Registro de bucle para pausar o leer de corrido
+  00000074            00015         Hhayrt3cla     ;Registro que permite saber si hay una tecla pulsada
+Warning[205]: Found directive in column 1. (ENDC)
+                      00016 ENDC    
+                      00017 
+                      00018 
+0000                  00019         org 0x0
+0000   28C4           00020                 goto Principal
+0004                  00021         org 04
+0004   28CC           00022                 goto Interrupcion
+                      00023 
+0005                  00024 Mostrar7Segmentos
+0005   0020           00025         banksel PORTD
+0006   008F           00026         movwf PORTD
+0007   30F0           00027         movlw 0xF0
+0008   008E           00028         movwf PORTC
+0009   0008           00029         return
+                      00030 
+000A                  00031 Control7Segmentos
+000A   0008           00032         return
+                      00033                 
+000B                  00034 ConfigurarPuertos
+                      00035         ; Puertos como E/S digital
+000B   0023           00036         banksel ANSELA  
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0010   018F           00038         CLRF    TRISD   ; Salida
+000C   018C           00037         clrf    ANSELA
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0011   018E           00039         CLRF    TRISC   ; Salida
-0012   30FF           00040         movlw   0xFF
+000D   018D           00038         clrf    ANSELB
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0013   008D           00041         movwf   TRISB   ; Entrada
-0014   0020           00042         banksel PORTD
-0015   018F           00043         CLRF    PORTD
-0016   018E           00044         clrf    PORTC
-0017   0008           00045         return
-                      00046 
-0018                  00047 Convertir7Segmentos; Tabla 7 segmentos catodo comun
-0018   000B           00048         brw
-0019   34C0           00049         retlw   0xC0; 0
-001A   34F9           00050         retlw   0xF9; 1
-001B   34A4           00051         retlw   0xA4; 2
-001C   34B0           00052         retlw   0xB0; 3
-001D   3499           00053         retlw   0x99; 4
-001E   3492           00054         retlw   0x92; 5
-001F   3483           00055         retlw   0x83; 6
-0020   34E8           00056         retlw   0xE8; 7
-0021   3480           00057         retlw   0x80; 8
-0022   3498           00058         retlw   0x98; 9
-                      00059 
-                      00060 
-0023                  00061 Principal
-0023   200B           00062         call ConfigurarPuertos
-0024   2826           00063         goto Loop
-                      00064 
-0025                  00065 Interrupcion
-0025   0009           00066         retfie ; Returnar de interrupcion
-                      00067         
-0026                  00068 Loop
-0026   3001           00069         movlw   1
-0027   2018           00070         call    Convertir7Segmentos
-0028   200A           00071         call    Control7Segmentos
-0029   2005           00072         call    Mostrar7Segmentos
-002A   2826           00073         goto    Loop
+000E   018F           00039         clrf    ANSELD
+                      00040         ; Configurar purtos 
+000F   0021           00041         banksel TRISD
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0010   018F           00042         CLRF    TRISD   ; Salida
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0011   018E           00043         CLRF    TRISC   ; Salida
+0012   0021           00044         banksel TRISB
+0013   30F0           00045         movlw   0xF0    ;
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0014   008D           00046         movwf   TRISB   ; 0-3 Salida 4-7 Entrada
+                      00047         
+                      00048         ;banksel WPUB   ; Weak pull-up - evitar resistencias
+                      00049 ;       movwf   WPUB
+                      00050 
+0015   0020           00051         banksel PORTD
+0016   018F           00052         CLRF    PORTD
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0017   018E           00053         clrf    PORTC
+                      00054 
+0018   0008           00055         return
+                      00056 
+0019                  00057 Convertir7Segmentos; Tabla 7 segmentos catodo comun
+0019   000B           00058         brw;                    xgfe dcba
+001A   3440           00059         retlw   0x40; 0-> 0100 0000
+001B   3479           00060         retlw   0x79; 1-> 0111 1001
+001C   3424           00061         retlw   0x24; 2-> 0010 0100
+001D   3430           00062         retlw   0x30; 3-> 0011 0000
+001E   3419           00063         retlw   0x19; 4-> 0001 1001
+001F   3412           00064         retlw   0x12; 5-> 0001 0010
+0020   3403           00065         retlw   0x03; 6-> 0000 0011
+0021   3478           00066         retlw   0x78; 7-> 0111 1000
+0022   3400           00067         retlw   0x00; 8-> 0000 0000
+0023   3418           00068         retlw   0x18; 9-> 0001 1000
+0024   3402           00069         retlw   0x02; 
+0025   3403           00070         retlw   0x03; 
+0026   3404           00071         retlw   0x04; 
+0027   3405           00072         retlw   0x05; 
+0028   3406           00073         retlw   0x06; // Asterisco
+0029   3407           00074         retlw   0x07; 
+002A   3408           00075         retlw   0x08; //
+002B   347F           00076         retlw   0x7F; apagar todos los displays
+                      00077         
+                      00078 
+                      00079 ; ....................www.rodrigocarita.com................................
+                      00080 ; Librerï¿½a para teclado matricial 4x4
+                      00081 ;Versiï¿½n : 1.0
+                      00082 ;..:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                            ::::::::
+                      00083 ;Atencion: Esta librerï¿½a funciona con la macro en Versiï¿½n 1.2 y superiores.
+                      00084 ;:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                            ::::::
+                      00085 ;   | 1 | 2 | 3 | A |   --->PORTB,0
+                      00086 ;   | 4 | 5 | 6 | B |   ---> PORTB,1
+                      00087 ;   | 7 | 8 | 9 | C |    --->PORTB,2
+                      00088 ;   | * | 0 | # | D |   ---> PORTB,3
+                      00089 ;      |    |    |    |
+                      00090 ;    RB4 RB5 RB6 RB7
+                      00091 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00092 ;Modo de conexiï¿½n es sencilla, con el teclado mirï¿½ndonos, los pines se conectan de modo
+                      00093 ;                                    RB0,RB1,RB2,RB3,...,RB7,
+                      00094 ;-------------------------------------------------------------------------------------------------------
+                            ----------------------  
+                      00095 
+002C                  00096 IN1ci0t3cla4do                  ; Subrutina de configuraciï¿½n de Teclado. Activa las resistencias PULL-
+                            UP
+002C   0021           00097         banksel TRISB                                   ;Vamos al banco 1
+002D   30F0           00098         MOVLW b'11110000'       ; Configuramos las columnas como salida y las filas como entrada
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+002E   008D           00099         MOVWF TRISB
+002F   0021           00100         banksel OPTION_REG                      ;del puerto B.
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0030   1395           00101         BCF OPTION_REG,7                ;Activa las resistencias tipo PULL-UP del pic
+0031   0020           00102         BANKSEL PORTB                                   ;Regresamos al Banco 0
+0032   01F1           00103         CLRF tekl4pul5          ;Limpiamos memorias de teclapulsada
+0033   01F3           00104         CLRF Sit3cl4pus         ;Limpiamos permisos para bucles
+0034   0008           00105         RETURN                          ;Salimos de la subrutina de configuraciï¿½n
+                      00106 
+0035                  00107 Tttest3aTecld0o                                                 ;tï¿½tulo de subrutina para escaner de t
+                            eclado  
+                      00108         cargarvalor .0,Hhayrt3cla                               ;Limpiamos el valor de comprobaciï¿½n si
+                             hubo una tecla pulsada
+0035   3000               M         MOVLW .0
+0036   00F4               M         MOVWF Hhayrt3cla
+                      00109         cargarvalor b'11111110',PORTB                   ;Cargamos el primer valor para escanear la prime
+                            ra fila
+0037   30FE               M         MOVLW b'11111110'
+0038   008D               M         MOVWF PORTB
+0039   0000           00110         nop                                                                             ;Tiempo paranï¿½
+                            ico
+                      00111         copiarregistro PORTB,c0mpparadD0r               ;Leemos el puerto B para ver si hay un botï¿½n p
+                            ulsado
+003A   080D               M         MOVF PORTB,0
+003B   00F2               M         MOVWF c0mpparadD0r
+                      00112         csi c0mpparadD0r,b'11101110',BoTt0Nn1   ;Iniciamos el Escaneo, Se pulsï¿½ la primera columnï¿½? 
+003C   30EE               M                 movlw   b'11101110'
+003D   0272               M                  subwf  c0mpparadD0r,0
+003E   1903               M                  btfsc  STATUS,Z
+003F   2897               M                  goto   BoTt0Nn1
+                      00113         csi c0mpparadD0r,b'11011110',BoTt0Nn2   ;Se pulsï¿½ la segunda columna? 
+0040   30DE               M                 movlw   b'11011110'
+0041   0272               M                  subwf  c0mpparadD0r,0
+0042   1903               M                  btfsc  STATUS,Z
+0043   289A               M                  goto   BoTt0Nn2
+                      00114         csi c0mpparadD0r,b'10111110',BoTt0Nn3   ;Se pulsï¿½ la tercera columna?
+0044   30BE               M                 movlw   b'10111110'
+0045   0272               M                  subwf  c0mpparadD0r,0
+0046   1903               M                  btfsc  STATUS,Z
+0047   289D               M                  goto   BoTt0Nn3
+                      00115         csi c0mpparadD0r,b'01111110',BoTt0NnA   ;Se pulsï¿½ la cuarta columna?
+0048   307E               M                 movlw   b'01111110'
+0049   0272               M                  subwf  c0mpparadD0r,0
+004A   1903               M                  btfsc  STATUS,Z
+004B   28B2               M                  goto   BoTt0NnA
+                      00116 
+                      00117         cargarvalor b'11111101',PORTB                   ;Cargamos el segundo valor para escanear la segu
+                            nda fila
+004C   30FD               M         MOVLW b'11111101'
+004D   008D               M         MOVWF PORTB
+004E   0000           00118         nop                                                                             ;Tiempo paranï¿½
+                            ico
+                      00119         copiarregistro PORTB,c0mpparadD0r                ;Leemos el puerto B para ver si hay un botï¿½n 
+                            pulsado
+004F   080D               M         MOVF PORTB,0
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0050   00F2               M         MOVWF c0mpparadD0r
+                      00120         csi c0mpparadD0r,b'11101101',BoTt0Nn4         ;Iniciamos el Escaneo, Se pulsï¿½ la primera colum
+                            nï¿½?   
+0051   30ED               M                 movlw   b'11101101'
+0052   0272               M                  subwf  c0mpparadD0r,0
+0053   1903               M                  btfsc  STATUS,Z
+0054   28A0               M                  goto   BoTt0Nn4
+                      00121         csi c0mpparadD0r,b'11011101',BoTt0Nn5         ;Se pulsï¿½ la segunda columna?   
+0055   30DD               M                 movlw   b'11011101'
+0056   0272               M                  subwf  c0mpparadD0r,0
+0057   1903               M                  btfsc  STATUS,Z
+0058   28A3               M                  goto   BoTt0Nn5
+                      00122         csi c0mpparadD0r,b'10111101',BoTt0Nn6         ;Se pulsï¿½ la tercera columna?
+0059   30BD               M                 movlw   b'10111101'
+005A   0272               M                  subwf  c0mpparadD0r,0
+005B   1903               M                  btfsc  STATUS,Z
+005C   28A6               M                  goto   BoTt0Nn6
+                      00123         csi c0mpparadD0r,b'01111101',BoTt0NnB         ;Se pulsï¿½ la cuarta columna?
+005D   307D               M                 movlw   b'01111101'
+005E   0272               M                  subwf  c0mpparadD0r,0
+005F   1903               M                  btfsc  STATUS,Z
+0060   28B5               M                  goto   BoTt0NnB
+                      00124 
+                      00125         cargarvalor b'11111011',PORTB                   ;Cargamos el tercer valor para escanear la terce
+                            ra fila 
+0061   30FB               M         MOVLW b'11111011'
+0062   008D               M         MOVWF PORTB
+0063   0000           00126         nop                                                                                    ;Tiempo p
+                            aranï¿½ico 
+                      00127         copiarregistro PORTB,c0mpparadD0r                  ;Leemos el puerto B para ver si hay un botï¿½
+                            n pulsado
+0064   080D               M         MOVF PORTB,0
+0065   00F2               M         MOVWF c0mpparadD0r
+                      00128         csi c0mpparadD0r,b'11101011',BoTt0Nn7         ;Iniciamos el Escaneo, Se pulsï¿½ la primera colum
+                            nï¿½?   
+0066   30EB               M                 movlw   b'11101011'
+0067   0272               M                  subwf  c0mpparadD0r,0
+0068   1903               M                  btfsc  STATUS,Z
+0069   28A9               M                  goto   BoTt0Nn7
+                      00129         csi c0mpparadD0r,b'11011011',BoTt0Nn8         ;Se pulsï¿½ la segunda columna?   
+006A   30DB               M                 movlw   b'11011011'
+006B   0272               M                  subwf  c0mpparadD0r,0
+006C   1903               M                  btfsc  STATUS,Z
+006D   28AC               M                  goto   BoTt0Nn8
+                      00130         csi c0mpparadD0r,b'10111011',BoTt0Nn9         ;Se pulsï¿½ la tercera columna?
+006E   30BB               M                 movlw   b'10111011'
+006F   0272               M                  subwf  c0mpparadD0r,0
+0070   1903               M                  btfsc  STATUS,Z
+0071   28AF               M                  goto   BoTt0Nn9
+                      00131         csi c0mpparadD0r,b'01111011',BoTt0NnC         ;Se pulsï¿½ la cuarta columna?
+0072   307B               M                 movlw   b'01111011'
+0073   0272               M                  subwf  c0mpparadD0r,0
+0074   1903               M                  btfsc  STATUS,Z
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0075   28B8               M                  goto   BoTt0NnC
+                      00132         cargarvalor b'11110111',PORTB                   ;Cargamos el cuarto valor para escanear la cuart
+                            a fila  
+0076   30F7               M         MOVLW b'11110111'
+0077   008D               M         MOVWF PORTB
+0078   0000           00133         nop                                                                                    ;Tiempo p
+                            aranï¿½ico 
+                      00134         copiarregistro PORTB,c0mpparadD0r                  ;Leemos el puerto B para ver si hay un botï¿½
+                            n       pulsado
+0079   080D               M         MOVF PORTB,0
+007A   00F2               M         MOVWF c0mpparadD0r
+                      00135         csi c0mpparadD0r,b'11100111',BoTt0NnAST     ;Iniciamos el Escaneo, Se pulsï¿½ la primera columnï
+                            ¿½?     
+007B   30E7               M                 movlw   b'11100111'
+007C   0272               M                  subwf  c0mpparadD0r,0
+007D   1903               M                  btfsc  STATUS,Z
+007E   28BE               M                  goto   BoTt0NnAST
+                      00136         csi c0mpparadD0r,b'11010111',BoTt0Nn0         ;Se pulsï¿½ la segunda columna?   
+007F   30D7               M                 movlw   b'11010111'
+0080   0272               M                  subwf  c0mpparadD0r,0
+0081   1903               M                  btfsc  STATUS,Z
+0082   2894               M                  goto   BoTt0Nn0
+                      00137         csi c0mpparadD0r,b'10110111',BoTt0NnMICH   ;Se pulsï¿½ la tercera columna? 
+0083   30B7               M                 movlw   b'10110111'
+0084   0272               M                  subwf  c0mpparadD0r,0
+0085   1903               M                  btfsc  STATUS,Z
+0086   28C1               M                  goto   BoTt0NnMICH
+                      00138         csi c0mpparadD0r,b'01110111',BoTt0NnD         ;Se pulsï¿½ la cuarta columna?
+0087   3077               M                 movlw   b'01110111'
+0088   0272               M                  subwf  c0mpparadD0r,0
+0089   1903               M                  btfsc  STATUS,Z
+008A   28BB               M                  goto   BoTt0NnD
+                      00139         csi c0mpparadD0r,b'11110111',SinTecl4    ; NO SE PULSï¿½ NADA?? 
+008B   30F7               M                 movlw   b'11110111'
+008C   0272               M                  subwf  c0mpparadD0r,0
+008D   1903               M                  btfsc  STATUS,Z
+008E   288F               M                  goto   SinTecl4
+                      00140 
+008F                  00141 SinTecl4                                        ;Subrutina para cuando no haya alguna tecla pulsada.    
+                                    
+                      00142         cargarvalor .1,Hhayrt3cla       ; Carga el valor de 1 en el registro Hhayrt3cla 
+008F   3001               M         MOVLW .1
+0090   00F4               M         MOVWF Hhayrt3cla
+0091   1C73           00143         BTFSS Sit3cl4pus,0                      ;Esta en el modo de pausa?
+0092   0008           00144         RETURN                                          ;Caso falso: Sale de la subrutina continuando co
+                            n el programa principal
+0093   2835           00145         GOTO Tttest3aTecld0o                    ;Caso verdadero: Continua testeando el teclado hasta que
+                             una tecla se pulse
+                      00146 
+0094                  00147 BoTt0Nn0                                        ;Subrutina para cuando se presione el botï¿½n 0
+                      00148         cargarvalor 0x0,tekl4pul5               ;Carga el valor de "0" en el registro de respuesta tekl4
+                            pul5 
+0094   3000               M         MOVLW 0x0
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 15
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0095   00F1               M         MOVWF tekl4pul5
+0096   0008           00149         RETURN                                          ;Sale de la subrutina de teclado
+                      00150 
+0097                  00151 BoTt0Nn1                                        ;Subrutina para cuando se presione el botï¿½n 1
+                      00152         cargarvalor 0x1,tekl4pul5           ;Carga el valor de "1" en el registro de respuesta tekl4pul5
+                             
+0097   3001               M         MOVLW 0x1
+0098   00F1               M         MOVWF tekl4pul5
+0099   0008           00153         RETURN                                                  ;Sale de la subrutina de teclado
+                      00154 
+009A                  00155 BoTt0Nn2                                        ;Subrutina para cuando se presione el botï¿½n 2
+                      00156         cargarvalor 0x2,tekl4pul5           ;Carga el valor de "2" en el registro de respuesta tekl4pul5
+                             
+009A   3002               M         MOVLW 0x2
+009B   00F1               M         MOVWF tekl4pul5
+009C   0008           00157         RETURN                                                  ;Sale de la subrutina de teclado
+                      00158 
+009D                  00159 BoTt0Nn3                                        ;Subrutina para cuando se presione el botï¿½n 3
+                      00160         cargarvalor 0x3,tekl4pul5           ;Carga el valor de "3" en el registro de respuesta tekl4pul5
+                             
+009D   3003               M         MOVLW 0x3
+009E   00F1               M         MOVWF tekl4pul5
+009F   0008           00161         RETURN                                                  ;Sale de la subrutina de teclado
+                      00162 
+00A0                  00163 BoTt0Nn4                                        ;Subrutina para cuando se presione el botï¿½n 4
+                      00164         cargarvalor 0x4,tekl4pul5           ;Carga el valor de "4" en el registro de respuesta tekl4pul5
+                             
+00A0   3004               M         MOVLW 0x4
+00A1   00F1               M         MOVWF tekl4pul5
+00A2   0008           00165         RETURN                                                  ;Sale de la subrutina de teclado
+                      00166 
+00A3                  00167 BoTt0Nn5                                        ;Subrutina para cuando se presione el botï¿½n 5
+                      00168         cargarvalor 0x5,tekl4pul5           ;Carga el valor de "5" en el registro de respuesta tekl4pul5
+                             
+00A3   3005               M         MOVLW 0x5
+00A4   00F1               M         MOVWF tekl4pul5
+00A5   0008           00169         RETURN                                                          ;Sale de la subrutina de teclado
+                      00170 
+00A6                  00171 BoTt0Nn6                                        ;Subrutina para cuando se presione el botï¿½n 6
+                      00172         cargarvalor 0x6,tekl4pul5           ;Carga el valor de "6" en el registro de respuesta tekl4pul5
+                             
+00A6   3006               M         MOVLW 0x6
+00A7   00F1               M         MOVWF tekl4pul5
+00A8   0008           00173         RETURN                                                  ;Sale de la subrutina de teclado
+                      00174 
+00A9                  00175 BoTt0Nn7                                        ;Subrutina para cuando se presione el botï¿½n 7
+                      00176         cargarvalor 0x7,tekl4pul5           ;Carga el valor de "7" en el registro de respuesta tekl4pul5
+                             
+00A9   3007               M         MOVLW 0x7
+00AA   00F1               M         MOVWF tekl4pul5
+00AB   0008           00177         RETURN                                                  ;Sale de la subrutina de teclado
+                      00178 
+00AC                  00179 BoTt0Nn8                                        ;Subrutina para cuando se presione el botï¿½n 8
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 16
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00180         cargarvalor 0x8,tekl4pul5           ;Carga el valor de "8" en el registro de respuesta tekl4pul5
+                             
+00AC   3008               M         MOVLW 0x8
+00AD   00F1               M         MOVWF tekl4pul5
+00AE   0008           00181         RETURN                                                  ;Sale de la subrutina de teclado
+                      00182 
+00AF                  00183 BoTt0Nn9                                        ;Subrutina para cuando se presione el botï¿½n 9 
+                      00184         cargarvalor 0x9,tekl4pul5           ;Carga el valor de "9" en el registro de respuesta tekl4pul5
+                             
+00AF   3009               M         MOVLW 0x9
+00B0   00F1               M         MOVWF tekl4pul5
+00B1   0008           00185         RETURN                                                  ;Sale de la subrutina de teclado
+                      00186 
+00B2                  00187 BoTt0NnA                                        ;Subrutina para cuando se presione el botï¿½n A
+                      00188         cargarvalor 0xA,tekl4pul5        ;Carga el valor de "10" en el registro de respuesta tekl4pul5
+00B2   300A               M         MOVLW 0xA
+00B3   00F1               M         MOVWF tekl4pul5
+00B4   0008           00189         RETURN                                                  ;Sale de la subrutina de teclado
+                      00190 
+00B5                  00191 BoTt0NnB                                        ;Subrutina para cuando se presione el botï¿½n B
+                      00192         cargarvalor 0xB,tekl4pul5        ;Carga el valor de "11" en el registro de respuesta tekl4pul5
+00B5   300B               M         MOVLW 0xB
+00B6   00F1               M         MOVWF tekl4pul5
+00B7   0008           00193         RETURN                                                  ;Sale de la subrutina de teclado
+                      00194 
+00B8                  00195 BoTt0NnC                                        ;Subrutina para cuando se presione el botï¿½n C
+                      00196         cargarvalor 0xC,tekl4pul5        ;Carga el valor de "12" en el registro de respuesta tekl4pul5
+00B8   300C               M         MOVLW 0xC
+00B9   00F1               M         MOVWF tekl4pul5
+00BA   0008           00197         RETURN                                                  ;Sale de la subrutina de teclado
+                      00198 
+00BB                  00199 BoTt0NnD                                        ;Subrutina para cuando se presione el botï¿½n D
+                      00200         cargarvalor 0xD,tekl4pul5        ;Carga el valor de "13" en el registro de respuesta tekl4pul5
+00BB   300D               M         MOVLW 0xD
+00BC   00F1               M         MOVWF tekl4pul5
+00BD   0008           00201         RETURN                                                  ;Sale de la subrutina de teclado
+                      00202 
+00BE                  00203 BoTt0NnAST                                      ;Subrutina para cuando se presione el botï¿½n * 
+                      00204         cargarvalor 0xE,tekl4pul5        ;Carga el valor de "14" en el registro de respuesta tekl4pul5
+00BE   300E               M         MOVLW 0xE
+00BF   00F1               M         MOVWF tekl4pul5
+00C0   0008           00205         RETURN                                                  ;Sale de la subrutina de teclado
+                      00206 
+00C1                  00207 BoTt0NnMICH                                     ;Subrutina para cuando se presione el botï¿½n #
+                      00208         cargarvalor 0xF,tekl4pul5        ;Carga el valor de "15" en el registro de respuesta tekl4pul5
+00C1   300F               M         MOVLW 0xF
+00C2   00F1               M         MOVWF tekl4pul5
+00C3   0008           00209         RETURN                                                  ;Sale de la subrutina de teclado
+                      00210 
+                      00211 ; Revisa las ï¿½ltimas actualizaciones de la librerï¿½a en:
+                      00212 ;......................................................................... rodrigocarita.com ...........
+                            .......................................................................................
+                      00213 
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 17
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00C4                  00214 Principal
+00C4   0021           00215         BANKSEL OSCCON
+00C5   306F           00216         MOVLW 0x6F
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00C6   0099           00217         MOVWF OSCCON ; Reloj interno a 4 Mhz sin PLL
+00C7   3004           00218         movlw 0x04
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00C8   0095           00219         movwf OPTION_REG ; Preescalador 1:32
+00C9   200B           00220         call ConfigurarPuertos
+00CA   202C           00221         call IN1ci0t3cla4do
+00CB   28CD           00222         goto Loop
+                      00223 
+00CC                  00224 Interrupcion
+00CC   0009           00225         retfie ; Returnar de interrupcion
+                      00226         
+00CD                  00227 Loop
+                      00228         leertecla               ;Pausamos programa hasta que se pulse una tecla
+00CD   1473               M         BSF Sit3cl4pus,0
+00CE   2035               M         CALL Tttest3aTecld0o
+00CF   00F0           00229         movwf tecla_presionada     
+00D0   2019           00230         call    Convertir7Segmentos
+00D1   200A           00231         call    Control7Segmentos
+00D2   2005           00232         call    Mostrar7Segmentos
+00D3   28CD           00233         goto    Loop
+                      00234 
 Message[303]: Program word too large.  Truncated to core size. (FFE4)
 Message[303]: Program word too large.  Truncated to core size. (FFFF)
-                      00074         end     
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE  3
+                      00235         END
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 18
 
 
 SYMBOL TABLE
@@ -166,7 +1035,7 @@ ANSB6                             00000006
 ANSD0                             00000000
 ANSD1                             00000001
 ANSD2                             00000002
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE  4
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 19
 
 
 SYMBOL TABLE
@@ -212,6 +1081,28 @@ BUF4                              00000004
 BUF5                              00000005
 BUF6                              00000006
 BUF7                              00000007
+BoTt0Nn0                          00000094
+BoTt0Nn1                          00000097
+BoTt0Nn2                          0000009A
+BoTt0Nn3                          0000009D
+BoTt0Nn4                          000000A0
+BoTt0Nn5                          000000A3
+BoTt0Nn6                          000000A6
+BoTt0Nn7                          000000A9
+BoTt0Nn8                          000000AC
+BoTt0Nn9                          000000AF
+BoTt0NnA                          000000B2
+BoTt0NnAST                        000000BE
+BoTt0NnB                          000000B5
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 20
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BoTt0NnC                          000000B8
+BoTt0NnD                          000000BB
+BoTt0NnMICH                       000000C1
 C                                 00000000
 C1HYS                             00000001
 C1IE                              00000005
@@ -225,12 +1116,6 @@ C1OE                              00000005
 C1ON                              00000007
 C1OUT                             00000006
 C1PCH0                            00000003
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE  5
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 C1PCH1                            00000004
 C1PCH2                            00000005
 C1POL                             00000004
@@ -268,6 +1153,12 @@ C3OE                              00000005
 C3ON                              00000007
 C3OUT                             00000006
 C3PCH0                            00000003
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 21
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 C3PCH1                            00000004
 C3PCH2                            00000005
 C3POL                             00000004
@@ -284,12 +1175,6 @@ C4NCH1                            00000001
 C4NCH2                            00000002
 C4OE                              00000005
 C4ON                              00000007
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE  6
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 C4OUT                             00000006
 C4PCH0                            00000003
 C4PCH1                            00000004
@@ -327,6 +1212,12 @@ CCPR1H                            00000292
 CCPR1L                            00000291
 CCPR2                             00000298
 CCPR2H                            00000299
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 22
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 CCPR2L                            00000298
 CCPR3                             00000311
 CCPR3H                            00000312
@@ -343,12 +1234,6 @@ CHSN0                             00000000
 CHSN1                             00000001
 CHSN2                             00000002
 CHSN3                             00000003
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE  7
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 CKE                               00000006
 CKP                               00000004
 CLKRCON                           0000051A
@@ -374,7 +1259,7 @@ CSRC                              00000007
 C_SHAD                            00000000
 ConfigurarPuertos                 0000000B
 Control7Segmentos                 0000000A
-Convertir7Segmentos               00000018
+Convertir7Segmentos               00000019
 DACCON0                           00000118
 DACCON1                           00000119
 DACEN                             00000007
@@ -386,6 +1271,12 @@ DACPSS1                           00000003
 DACR0                             00000000
 DACR1                             00000001
 DACR2                             00000002
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 23
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 DACR3                             00000003
 DACR4                             00000004
 DACR5                             00000005
@@ -402,12 +1293,6 @@ DC_SHAD                           00000001
 DHEN                              00000000
 DONE                              00000001
 D_NOT_A                           00000005
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE  8
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 EEADR                             00000191
 EEADRH                            00000192
 EEADRL                            00000191
@@ -442,7 +1327,15 @@ GO_NOT_DONE                       00000001
 HFIOFL                            00000003
 HFIOFR                            00000004
 HFIOFS                            00000000
+Hhayrt3cla                        00000074
+IN1ci0t3cla4do                    0000002C
 INDF0                             00000000
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 24
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 INDF1                             00000001
 INLVLA                            0000038C
 INLVLA0                           00000000
@@ -461,12 +1354,6 @@ INLVLB3                           00000003
 INLVLB4                           00000004
 INLVLB5                           00000005
 INLVLB6                           00000006
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE  9
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 INLVLB7                           00000007
 INLVLC                            0000038E
 INLVLC0                           00000000
@@ -502,6 +1389,12 @@ IOCAF2                            00000002
 IOCAF3                            00000003
 IOCAF4                            00000004
 IOCAF5                            00000005
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 25
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 IOCAF6                            00000006
 IOCAF7                            00000007
 IOCAN                             00000392
@@ -520,12 +1413,6 @@ IOCAP2                            00000002
 IOCAP3                            00000003
 IOCAP4                            00000004
 IOCAP5                            00000005
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 10
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 IOCAP6                            00000006
 IOCAP7                            00000007
 IOCBF                             00000396
@@ -561,6 +1448,12 @@ IOCCF1                            00000001
 IOCCF2                            00000002
 IOCCF3                            00000003
 IOCCF4                            00000004
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 26
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 IOCCF5                            00000005
 IOCCF6                            00000006
 IOCCF7                            00000007
@@ -579,12 +1472,6 @@ IOCCP1                            00000001
 IOCCP2                            00000002
 IOCCP3                            00000003
 IOCCP4                            00000004
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 11
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 IOCCP5                            00000005
 IOCCP6                            00000006
 IOCCP7                            00000007
@@ -600,7 +1487,7 @@ IRCF0                             00000003
 IRCF1                             00000004
 IRCF2                             00000005
 IRCF3                             00000006
-Interrupcion                      00000025
+Interrupcion                      000000CC
 LATA                              0000010C
 LATA0                             00000000
 LATA1                             00000001
@@ -620,6 +1507,12 @@ LATB5                             00000005
 LATB6                             00000006
 LATB7                             00000007
 LATC                              0000010E
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 27
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 LATC0                             00000000
 LATC1                             00000001
 LATC2                             00000002
@@ -638,18 +1531,12 @@ LATD5                             00000005
 LATD6                             00000006
 LATD7                             00000007
 LATE                              00000110
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 12
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 LATE0                             00000000
 LATE1                             00000001
 LATE2                             00000002
 LFIOFR                            00000001
 LWLO                              00000005
-Loop                              00000026
+Loop                              000000CD
 MC1OUT                            00000000
 MC2OUT                            00000001
 MC3OUT                            00000002
@@ -679,6 +1566,12 @@ ODCONA1                           00000001
 ODCONA2                           00000002
 ODCONA3                           00000003
 ODCONA4                           00000004
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 28
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 ODCONA5                           00000005
 ODCONA6                           00000006
 ODCONA7                           00000007
@@ -697,12 +1590,6 @@ ODCONC1                           00000001
 ODCONC2                           00000002
 ODCONC3                           00000003
 ODCONC4                           00000004
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 13
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 ODCONC5                           00000005
 ODCONC6                           00000006
 ODCONC7                           00000007
@@ -738,6 +1625,12 @@ OSFIE                             00000007
 OSFIF                             00000007
 OSTS                              00000005
 P                                 00000004
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 29
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 P1ARSEN                           00000005
 P1ASDEN                           00000006
 P1ASDLA                           00000000
@@ -756,12 +1649,6 @@ P1ASE                             00000007
 P1CPRE0                           00000004
 P1CPRE1                           00000005
 P1CSRC0                           00000000
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 14
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 P1CSRC1                           00000001
 P1DBFE                            00000005
 P1DBRE                            00000004
@@ -797,6 +1684,12 @@ P1OEA                             00000000
 P1OEB                             00000001
 P1OEC                             00000002
 P1OED                             00000003
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 30
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 P1OEE                             00000004
 P1OEF                             00000005
 P1PHSC1                           00000001
@@ -815,12 +1708,6 @@ P1POLF                            00000005
 P1PRPOL                           00000006
 P1PRSC1                           00000001
 P1PRSC2                           00000002
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 15
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 P1PRSC3                           00000003
 P1PRSC4                           00000004
 P1PRSIN                           00000007
@@ -856,6 +1743,12 @@ P2ASDLA                           00000000
 P2ASDLB                           00000001
 P2ASDOV                           00000000
 P2ASDSC1                          00000001
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 31
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 P2ASDSC2                          00000002
 P2ASDSC3                          00000003
 P2ASDSC4                          00000004
@@ -874,12 +1767,6 @@ P2DCSC3                           00000003
 P2DCSC4                           00000004
 P2DCSIN                           00000007
 P2DCST                            00000000
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 16
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 P2FEBM0                           00000004
 P2FEBM1                           00000005
 P2FEBSC1                          00000001
@@ -915,6 +1802,12 @@ P2POLB                            00000001
 P2PRPOL                           00000006
 P2PRSC1                           00000001
 P2PRSC2                           00000002
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 32
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 P2PRSC3                           00000003
 P2PRSC4                           00000004
 P2PRSIN                           00000007
@@ -933,12 +1826,6 @@ P2SYNC0                           00000000
 P2SYNC1                           00000001
 P2SYNC2                           00000002
 P2TDCIE                           00000005
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 17
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 P2TDCIF                           00000001
 P2TOVIE                           00000007
 P2TOVIF                           00000003
@@ -974,6 +1861,12 @@ P3DCSC3                           00000003
 P3DCSC4                           00000004
 P3DCSIN                           00000007
 P3DCST                            00000000
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 33
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 P3FEBM0                           00000004
 P3FEBM1                           00000005
 P3FEBSC1                          00000001
@@ -992,12 +1885,6 @@ P3MODE1                           00000001
 P3MODE2                           00000002
 P3MODE3                           00000003
 P3MSRC0                           00000000
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 18
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 P3MSRC1                           00000001
 P3MSRC2                           00000002
 P3MSRC3                           00000003
@@ -1033,6 +1920,12 @@ P3REBSC1                          00000001
 P3REBSC2                          00000002
 P3REBSC3                          00000003
 P3REBSC4                          00000004
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 34
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 P3REBSIN                          00000007
 P3SSYNC                           00000007
 P3STRA                            00000000
@@ -1051,12 +1944,6 @@ P3TOVIF                           00000003
 P3TPHIE                           00000006
 P3TPHIF                           00000002
 P3TPRIE                           00000004
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 19
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 P3TPRIF                           00000000
 PCIE                              00000006
 PCL                               00000002
@@ -1092,6 +1979,12 @@ PSMC1BLKF                         0000082C
 PSMC1BLKF0                        00000000
 PSMC1BLKF1                        00000001
 PSMC1BLKF2                        00000002
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 35
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 PSMC1BLKF3                        00000003
 PSMC1BLKF4                        00000004
 PSMC1BLKF5                        00000005
@@ -1110,12 +2003,6 @@ PSMC1BLNK                         00000817
 PSMC1CLK                          00000814
 PSMC1CON                          00000811
 PSMC1DBF                          0000082A
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 20
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 PSMC1DBF0                         00000000
 PSMC1DBF1                         00000001
 PSMC1DBF2                         00000002
@@ -1151,6 +2038,12 @@ PSMC1DC7                          00000007
 PSMC1DC8                          00000000
 PSMC1DC9                          00000001
 PSMC1DCH                          00000824
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 36
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 PSMC1DCL                          00000823
 PSMC1DCS                          0000081B
 PSMC1EN                           00000007
@@ -1169,12 +2062,6 @@ PSMC1PH0                          00000000
 PSMC1PH1                          00000001
 PSMC1PH10                         00000002
 PSMC1PH11                         00000003
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 21
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 PSMC1PH12                         00000004
 PSMC1PH13                         00000005
 PSMC1PH14                         00000006
@@ -1210,6 +2097,12 @@ PSMC1PR8                          00000000
 PSMC1PR9                          00000001
 PSMC1PRH                          00000826
 PSMC1PRL                          00000825
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 37
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 PSMC1PRS                          0000081C
 PSMC1REBS                         00000818
 PSMC1SIE                          00000000
@@ -1228,12 +2121,6 @@ PSMC1TMR12                        00000004
 PSMC1TMR13                        00000005
 PSMC1TMR14                        00000006
 PSMC1TMR15                        00000007
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 22
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 PSMC1TMR2                         00000002
 PSMC1TMR3                         00000003
 PSMC1TMR4                         00000004
@@ -1269,6 +2156,12 @@ PSMC2BLNK                         00000837
 PSMC2CLK                          00000834
 PSMC2CON                          00000831
 PSMC2DBF                          0000084A
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 38
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 PSMC2DBF0                         00000000
 PSMC2DBF1                         00000001
 PSMC2DBF2                         00000002
@@ -1287,12 +2180,6 @@ PSMC2DBR5                         00000005
 PSMC2DBR6                         00000006
 PSMC2DBR7                         00000007
 PSMC2DC                           00000843
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 23
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 PSMC2DC0                          00000000
 PSMC2DC1                          00000001
 PSMC2DC10                         00000002
@@ -1328,6 +2215,12 @@ PSMC2PH0                          00000000
 PSMC2PH1                          00000001
 PSMC2PH10                         00000002
 PSMC2PH11                         00000003
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 39
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 PSMC2PH12                         00000004
 PSMC2PH13                         00000005
 PSMC2PH14                         00000006
@@ -1346,12 +2239,6 @@ PSMC2PHS                          0000083A
 PSMC2POL                          00000836
 PSMC2PR                           00000845
 PSMC2PR0                          00000000
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 24
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 PSMC2PR1                          00000001
 PSMC2PR10                         00000002
 PSMC2PR11                         00000003
@@ -1387,6 +2274,12 @@ PSMC2TMR12                        00000004
 PSMC2TMR13                        00000005
 PSMC2TMR14                        00000006
 PSMC2TMR15                        00000007
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 40
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 PSMC2TMR2                         00000002
 PSMC2TMR3                         00000003
 PSMC2TMR4                         00000004
@@ -1405,12 +2298,6 @@ PSMC3BLKF0                        00000000
 PSMC3BLKF1                        00000001
 PSMC3BLKF2                        00000002
 PSMC3BLKF3                        00000003
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 25
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 PSMC3BLKF4                        00000004
 PSMC3BLKF5                        00000005
 PSMC3BLKF6                        00000006
@@ -1446,6 +2333,12 @@ PSMC3DBR5                         00000005
 PSMC3DBR6                         00000006
 PSMC3DBR7                         00000007
 PSMC3DC                           00000863
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 41
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 PSMC3DC0                          00000000
 PSMC3DC1                          00000001
 PSMC3DC10                         00000002
@@ -1464,12 +2357,6 @@ PSMC3DC8                          00000000
 PSMC3DC9                          00000001
 PSMC3DCH                          00000864
 PSMC3DCL                          00000863
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 26
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 PSMC3DCS                          0000085B
 PSMC3EN                           00000007
 PSMC3FEBS                         00000859
@@ -1505,6 +2392,12 @@ PSMC3PHS                          0000085A
 PSMC3POL                          00000856
 PSMC3PR                           00000865
 PSMC3PR0                          00000000
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 42
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 PSMC3PR1                          00000001
 PSMC3PR10                         00000002
 PSMC3PR11                         00000003
@@ -1523,12 +2416,6 @@ PSMC3PR9                          00000001
 PSMC3PRH                          00000866
 PSMC3PRL                          00000865
 PSMC3PRS                          0000085C
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 27
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 PSMC3REBS                         00000858
 PSMC3SIE                          00000002
 PSMC3SIF                          00000002
@@ -1555,7 +2442,8 @@ PSMC3TMR8                         00000000
 PSMC3TMR9                         00000001
 PSMC3TMRH                         00000868
 PSMC3TMRL                         00000867
-Principal                         00000023
+PULSOSUB                          
+Principal                         000000C4
 RA0                               00000000
 RA1                               00000001
 RA2                               00000002
@@ -1563,6 +2451,12 @@ RA3                               00000003
 RA4                               00000004
 RA5                               00000005
 RA6                               00000006
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 43
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 RA7                               00000007
 RB0                               00000000
 RB1                               00000001
@@ -1582,12 +2476,6 @@ RC4                               00000004
 RC5                               00000005
 RC6                               00000006
 RC7                               00000007
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 28
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 RCEN                              00000003
 RCIDL                             00000006
 RCIE                              00000005
@@ -1622,6 +2510,12 @@ SCKP                              00000004
 SCKSEL                            00000004
 SCS0                              00000000
 SCS1                              00000001
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 44
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 SDAHT                             00000003
 SDISEL                            00000003
 SDOSEL                            00000005
@@ -1641,12 +2535,6 @@ SLRCONB0                          00000000
 SLRCONB1                          00000001
 SLRCONB2                          00000002
 SLRCONB3                          00000003
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 29
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 SLRCONB4                          00000004
 SLRCONB5                          00000005
 SLRCONB6                          00000006
@@ -1681,6 +2569,12 @@ SPBRG                             0000019B
 SPBRG1                            0000019B
 SPBRGH                            0000019C
 SPBRGH1                           0000019C
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 45
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 SPBRGL                            0000019B
 SPEN                              00000007
 SPLLEN                            00000007
@@ -1700,12 +2594,6 @@ SSP1BUF1                          00000001
 SSP1BUF2                          00000002
 SSP1BUF3                          00000003
 SSP1BUF4                          00000004
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 30
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 SSP1BUF5                          00000005
 SSP1BUF6                          00000006
 SSP1BUF7                          00000007
@@ -1740,10 +2628,18 @@ SSPSTAT                           00000214
 STATUS                            00000003
 STATUS_SHAD                       00000FE4
 STKOVF                            00000007
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 46
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 STKPTR                            00000FED
 STKUNF                            00000006
 SWDTEN                            00000000
 SYNC                              00000004
+SinTecl4                          0000008F
+Sit3cl4pus                        00000073
 T0CS                              00000005
 T0IE                              00000005
 T0IF                              00000002
@@ -1759,12 +2655,6 @@ T1GSS0                            00000000
 T1GSS1                            00000001
 T1GTM                             00000005
 T1GVAL                            00000002
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 31
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 T1OSCEN                           00000003
 T1OSCR                            00000007
 T2CKPS0                           00000000
@@ -1797,6 +2687,12 @@ TMR2ON                            00000002
 TOSH                              00000FEF
 TOSL                              00000FEE
 TRIGSEL0                          00000004
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 47
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 TRIGSEL1                          00000005
 TRIGSEL2                          00000006
 TRIGSEL3                          00000007
@@ -1818,12 +2714,6 @@ TRISB4                            00000004
 TRISB5                            00000005
 TRISB6                            00000006
 TRISB7                            00000007
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 32
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 TRISC                             0000008E
 TRISC0                            00000000
 TRISC1                            00000001
@@ -1856,6 +2746,12 @@ TUN4                              00000004
 TUN5                              00000005
 TX1REG                            0000019A
 TX1STA                            0000019E
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 48
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 TX9                               00000006
 TX9D                              00000000
 TXEN                              00000005
@@ -1866,6 +2762,7 @@ TXREG1                            0000019A
 TXSEL                             00000002
 TXSTA                             0000019E
 TXSTA1                            0000019E
+Tttest3aTecld0o                   00000035
 UA                                00000001
 VREGCON                           00000197
 VREGPM                            00000001
@@ -1877,12 +2774,6 @@ WDTPS1                            00000002
 WDTPS2                            00000003
 WDTPS3                            00000004
 WDTPS4                            00000005
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 33
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 WPUA                              0000020C
 WPUA0                             00000000
 WPUA1                             00000001
@@ -1914,6 +2805,12 @@ WPUD                              0000020F
 WPUD0                             00000000
 WPUD1                             00000001
 WPUD2                             00000002
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 49
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 WPUD3                             00000003
 WPUD4                             00000004
 WPUD5                             00000005
@@ -1936,12 +2833,6 @@ _BOREN_NSLEEP                     0000FDFF
 _BOREN_OFF                        0000F9FF
 _BOREN_ON                         0000FFFF
 _BOREN_SBODEN                     0000FBFF
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 34
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 _BORV_HI                          0000FBFF
 _BORV_LO                          0000FFFF
 _CLKOUTEN_OFF                     0000FFFF
@@ -1973,6 +2864,12 @@ _LPBOR_OFF                        0000FFFF
 _LPBOR_ON                         0000F7FF
 _LVP_OFF                          0000DFFF
 _LVP_ON                           0000FFFF
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 50
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _MCLRE_OFF                        0000FFBF
 _MCLRE_ON                         0000FFFF
 _PLLEN_OFF                        0000FEFF
@@ -1993,23 +2890,86 @@ _WRT_HALF                         0000FFFD
 _WRT_OFF                          0000FFFF
 __16F1787                         00000001
 __DEBUG                           1
-MPASM  5.51                          MAIN.ASM   3-20-2023  10:57:28         PAGE 35
+apagar                            
+apagarpantalla                    
+borralcd                          
+c0mpparadD0r                      00000072
+cargarvalor                       
+convertir_a_bcd                   
+copiarregistro                    
+crearreg                          
+csi                               
+csir                              
+cursor_derecha                    
+cursor_izquierda                  
+cursor_off                        
+cursor_on                         
+desplazaderecha                   
+desplazaizquierda                 
+encender                          
+encenderpantalla                  
+enviaradisplay                    
+enviarcdisplay                    
+escribir                          
+escribirreg                       
+escribirregistro                  
+fila_enter                        
+fila_home                         
+iniciar_hcsr04                    
+iniciar_teclado                   
+iniciarlcd                        
+ir_a_fila                         
+irsitecla                         
+lcdfc                             
+leertecla                         
+llamarsitecla                     
+MPASM  5.51                          MAIN.ASM   3-20-2023  13:36:26         PAGE 51
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+mayorque                          
+mayorquereg                       
+medir_ultrasonico                 
+menorque                          
+menorquereg                       
+mensaje                           
+milisegundo                       
+multiplicarreg                    
+on_lib_retardos_ms                
+puertoa                           0000000C
+puertob                           0000000D
+puertoc                           0000000E
+puertod                           0000000F
+puertoe                           00000010
+registroadisplay                  
+registrocdisplay                  
+restarreg                         
+retardo_ms                        
+segundo                           
+setf                              
+sumarreg                          
+tecla_presionada                  00000070
+tekl4pul5                         00000071
 
 
 MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
 
-
-0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXX----- ----------------
+0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXX------------ ---------------- ----------------
 8000 : -------XX------- ---------------- ---------------- ----------------
 
 All other memory blocks unused.
 
-Program Memory Words Used:    42
-Program Memory Words Free:  8150
+Program Memory Words Used:   211
+Program Memory Words Free:  7981
 
 
 Errors   :     0
-Warnings :     2 reported,     0 suppressed
-Messages :    10 reported,     0 suppressed
+Warnings :    39 reported,     0 suppressed
+Messages :    14 reported,     0 suppressed
 
 

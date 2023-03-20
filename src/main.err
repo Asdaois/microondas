@@ -1,12 +1,53 @@
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 22 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 27 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 32 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 43 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 51 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 58 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 65 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 72 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 79 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 86 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 92 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 98 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 104 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 108 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 113 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 119 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 150 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 173 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 177 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 240 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 283 : Found directive in column 1. (endm)
+Warning[207] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 288 : Found label after column 1. (borralcd)
+Warning[207] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 292 : Found label after column 1. (desplazaderecha)
+Warning[207] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 296 : Found label after column 1. (desplazaizquierda)
+Warning[207] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 300 : Found label after column 1. (apagarpantalla)
+Warning[207] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 304 : Found label after column 1. (encenderpantalla)
+Warning[207] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 314 : Found label after column 1. (PULSOSUB)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 328 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 336 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 345 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 355 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 369 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 375 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 383 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 388 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 396 : Found directive in column 1. (endm)
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MIMACRO.INC 404 : Found directive in column 1. (endm)
 Message[303] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 5 : Program word too large.  Truncated to core size. (FFE4)
 Message[303] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 8 : Program word too large.  Truncated to core size. (FFFF)
 Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 10 : Found directive in column 1. (CBLOCK)
-Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 12 : Found directive in column 1. (ENDC)
-Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 33 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 34 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 35 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Warning[205] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 16 : Found directive in column 1. (ENDC)
+Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 37 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 38 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 39 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 41 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[303] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 74 : Program word too large.  Truncated to core size. (FFE4)
-Message[303] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 74 : Program word too large.  Truncated to core size. (FFFF)
+Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 42 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 43 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 46 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 99 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 101 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 217 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 219 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[303] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 235 : Program word too large.  Truncated to core size. (FFE4)
+Message[303] C:\USERS\JOSEX\PROJECTS\ASSEMBLER\MICROONDAS\SRC\MAIN.ASM 235 : Program word too large.  Truncated to core size. (FFFF)
