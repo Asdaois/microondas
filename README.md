@@ -29,7 +29,10 @@ Observación: Para todos los casos en modo ajuste los datos deberán estar prese
 palabras, estos no deben apagarse mientras se ajusta los datos.
 
 ## Iteraciones
-- [ ] Primera
-  - [ ] implementar display
-  - [ ] implementar teclado matricial
-  - [ ] implementar asignarles números del teclado al led
+- [X] Primera
+  - [X] implementar display
+  - [X] implementar teclado matricial
+  - [X] implementar asignarles números del teclado al led
+
+- [ ] Segunda
+  - [ ] guardar el valor que se presione en el teclado, de manera rotativa

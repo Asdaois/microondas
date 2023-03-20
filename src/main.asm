@@ -13,24 +13,113 @@ CBLOCK 0x70 ;Ran comun
 	c0mpparadD0r ;Registro que ser� el comparador para el escaner de teclado
 	Sit3cl4pus     ;Registro de bucle para pausar o leer de corrido
 	Hhayrt3cla     ;Registro que permite saber si hay una tecla pulsada
-ENDC	
 
+	puntero_numero_actual
+	numero_posicion_uno
+	numero_posicion_dos
+	numero_posicion_tres
+	numero_posicion_cuatro
+
+	display_actual
+
+	temp
+ENDC	
 
 	org 0x0
 		goto Principal
 	org 04
 		goto Interrupcion
 
+Principal
+	BANKSEL OSCCON
+	MOVLW 0x6F
+	MOVWF OSCCON ; Reloj interno a 4 Mhz sin PLL
+	banksel OPTION_REG
+	movlw 0x04
+	movwf OPTION_REG ; Preescalador 1:32
+	banksel INTCON
+	; INTERRUPT CONTROL REGISTER
+	movlw	0xE8	; 1110 1000
+	
+	call ConfigurarPuertos
+	call IN1ci0t3cla4do
+
+	movlw 0x01
+	movwf numero_posicion_uno
+	movlw 0x05
+	movwf numero_posicion_dos
+	movlw 0x07
+	movwf numero_posicion_tres
+	movlw 0x09
+	movwf numero_posicion_cuatro
+	movlw 0x01
+	movwf display_actual
+	goto Loop
+
+Interrupcion
+	retfie ; Returnar de interrupcion
+	
+Loop
+	call 	Leertecla               ;Pausamos programa hasta que se pulse una tecla
+	call	ManejarTimer
+	goto 	Loop
+
 Mostrar7Segmentos
+	; limpiar puntero incorrecto
+	btfss display_actual, 0
+	bcf PORTC, 4
+
+	btfss display_actual, 1
+	bcf PORTC, 5
+
+	btfss display_actual, 2
+	bcf PORTC, 6
+
+	btfss display_actual, 3
+	bcf PORTC, 7
+  ; mostrar puntero correcto
+	btfsc display_actual, 0
+	bsf PORTC, 4
+
+	btfsc display_actual, 1
+	bsf PORTC, 5
+
+	btfsc display_actual, 2
+	bsf PORTC, 6
+
+	btfsc display_actual, 3
+	bsf PORTC, 7
+
+  ; escoger numero a mostrar
+	btfsc display_actual, 0
+	movf numero_posicion_uno, W
+
+	btfsc display_actual, 1
+	movf numero_posicion_dos, W
+
+	btfsc display_actual, 2
+	movf numero_posicion_tres, W
+
+	btfsc display_actual, 3
+	movf numero_posicion_cuatro, W
+
+	; mostrar numero en pantalla 
+	call 	Convertir7Segmentos
 	banksel PORTD
 	movwf PORTD
-	movlw 0xF0
-	movwf PORTC
-	return
-
-Control7Segmentos
+	
 	return
 		
+Leertecla
+	banksel IOCBF 
+	movf IOCBF, W	
+	xorlw 0x00
+	btfsc 	STATUS, Z	; Si es 0 un boton fue presionado
+	return
+	
+	movwf   tecla_presionada  
+	return
+	
 ConfigurarPuertos
 	; Puertos como E/S digital
 	banksel ANSELA	
@@ -52,6 +141,37 @@ ConfigurarPuertos
 	CLRF 	PORTD
 	clrf	PORTC
 
+	; INTERRUPT-ON-CHANGE NEGATIVE EDGE REGISTER
+	banksel IOCBN
+	movlw	0xF0
+	movwf	IOCBN	;flanco de bajada para RA0, RA1 y RA2
+	banksel IOCBF
+	clrf IOCBF
+	return
+
+ManejarTimer
+	banksel 	INTCON
+	; Revisar Timer1 Overflow Interrupt Flag bit
+	btfss 	INTCON, TMR0IF 
+	return 	; No se ha desbordado
+	bcf 	INTCON, TMR0IF ; Resetear manualmente
+	banksel 	TMR0
+	movlw	.100 ; Aproximadamenet 5ms
+	movwf	TMR0; inicio nuevamente
+
+	call 	MoverPuntero
+	call 	Mostrar7Segmentos
+	return
+
+MoverPuntero
+	; Mover puntero a la izquierda
+	rlf 	display_actual, F
+	btfss 	display_actual, 4 ; Si esta en la posicion 4
+	return
+	
+	; Poner puntero en posicion inicial
+	movlw 0x1
+	movwf display_actual
 	return
 
 Convertir7Segmentos; Tabla 7 segmentos catodo comun
@@ -210,26 +330,4 @@ BoTt0NnMICH					;Subrutina para cuando se presione el bot�n #
 
 ; Revisa las �ltimas actualizaciones de la librer�a en:
 ;......................................................................... rodrigocarita.com ..................................................................................................
-
-Principal
-	BANKSEL OSCCON
-	MOVLW 0x6F
-	MOVWF OSCCON ; Reloj interno a 4 Mhz sin PLL
-	movlw 0x04
-	movwf OPTION_REG ; Preescalador 1:32
-	call ConfigurarPuertos
-	call IN1ci0t3cla4do
-	goto Loop
-
-Interrupcion
-	retfie ; Returnar de interrupcion
-	
-Loop
-	leertecla               ;Pausamos programa hasta que se pulse una tecla
-	movwf tecla_presionada     
-	call 	Convertir7Segmentos
-	call	Control7Segmentos
-	call 	Mostrar7Segmentos
-	goto 	Loop
-
 	END
