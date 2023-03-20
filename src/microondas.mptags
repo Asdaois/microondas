@@ -1,0 +1,50 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.5.4	//
+!_TAG_REVISION_NAME	MCHPTags	//
+!_TAG_REVISION_VERSION	6.0.1	//
+ASIGNAR	C:\Users\josex\projects\assembler\microondas\src\main.asm	392;"	l	line:392
+AUX	C:\Users\josex\projects\assembler\microondas\src\main.asm	22;"	q	line:22
+BCD_7SEG	C:\Users\josex\projects\assembler\microondas\src\main.asm	155;"	l	line:155
+CICLO	C:\Users\josex\projects\assembler\microondas\src\main.asm	77;"	l	line:77
+CICLO2	C:\Users\josex\projects\assembler\microondas\src\main.asm	68;"	l	line:68
+COND	C:\Users\josex\projects\assembler\microondas\src\main.asm	21;"	q	line:21
+COND2	C:\Users\josex\projects\assembler\microondas\src\main.asm	26;"	q	line:26
+COND_FINAL	C:\Users\josex\projects\assembler\microondas\src\main.asm	298;"	l	line:298
+CONINT	C:\Users\josex\projects\assembler\microondas\src\main.asm	141;"	l	line:141
+CONT0	C:\Users\josex\projects\assembler\microondas\src\main.asm	15;"	q	line:15
+CONT1	C:\Users\josex\projects\assembler\microondas\src\main.asm	16;"	q	line:16
+CONTINUAR1	C:\Users\josex\projects\assembler\microondas\src\main.asm	250;"	l	line:250
+CONTINUAR2	C:\Users\josex\projects\assembler\microondas\src\main.asm	248;"	l	line:248
+CON_COR	C:\Users\josex\projects\assembler\microondas\src\main.asm	275;"	l	line:275
+DEC	C:\Users\josex\projects\assembler\microondas\src\main.asm	23;"	q	line:23
+DEC2	C:\Users\josex\projects\assembler\microondas\src\main.asm	27;"	q	line:27
+DISM_H	C:\Users\josex\projects\assembler\microondas\src\main.asm	14;"	q	line:14
+DISM_L	C:\Users\josex\projects\assembler\microondas\src\main.asm	13;"	q	line:13
+DISS_H	C:\Users\josex\projects\assembler\microondas\src\main.asm	12;"	q	line:12
+DISS_L	C:\Users\josex\projects\assembler\microondas\src\main.asm	11;"	q	line:11
+ESTADO	C:\Users\josex\projects\assembler\microondas\src\main.asm	24;"	q	line:24
+FIN	C:\Users\josex\projects\assembler\microondas\src\main.asm	152;"	l	line:152
+FINAL	C:\Users\josex\projects\assembler\microondas\src\main.asm	352;"	l	line:352
+FINAL_1	C:\Users\josex\projects\assembler\microondas\src\main.asm	363;"	l	line:363
+INTERRUPCION	C:\Users\josex\projects\assembler\microondas\src\main.asm	167;"	l	line:167
+IRFIN	C:\Users\josex\projects\assembler\microondas\src\main.asm	239;"	l	line:239
+MIN_H	C:\Users\josex\projects\assembler\microondas\src\main.asm	20;"	q	line:20
+MIN_L	C:\Users\josex\projects\assembler\microondas\src\main.asm	19;"	q	line:19
+PAUSA	C:\Users\josex\projects\assembler\microondas\src\main.asm	325;"	l	line:325
+PAUSA_1	C:\Users\josex\projects\assembler\microondas\src\main.asm	328;"	l	line:328
+PRINCIPAL	C:\Users\josex\projects\assembler\microondas\src\main.asm	34;"	l	line:34
+REINICIAR	C:\Users\josex\projects\assembler\microondas\src\main.asm	284;"	l	line:284
+RETARDO	C:\Users\josex\projects\assembler\microondas\src\main.asm	382;"	l	line:382
+SEG_H	C:\Users\josex\projects\assembler\microondas\src\main.asm	18;"	q	line:18
+SEG_L	C:\Users\josex\projects\assembler\microondas\src\main.asm	17;"	q	line:17
+SIG	C:\Users\josex\projects\assembler\microondas\src\main.asm	196;"	l	line:196
+STPS	C:\Users\josex\projects\assembler\microondas\src\main.asm	295;"	l	line:295
+WAUX	C:\Users\josex\projects\assembler\microondas\src\main.asm	25;"	q	line:25
+__CONFIG	C:\Users\josex\projects\assembler\microondas\src\main.asm	5;"	l	line:5
+__CONFIG	C:\Users\josex\projects\assembler\microondas\src\main.asm	8;"	l	line:8
+org	C:\Users\josex\projects\assembler\microondas\src\main.asm	29;"	l	line:29
+org	C:\Users\josex\projects\assembler\microondas\src\main.asm	31;"	l	line:31

@@ -30,6 +30,6 @@ palabras, estos no deben apagarse mientras se ajusta los datos.
 
 ## Iteraciones
 - [ ] Primera
+  - [ ] implementar display
   - [ ] implementar teclado matricial
-  - [ ] implementar leds
-  - [ ] implementar asignarles numeros del teclado al led
+  - [ ] implementar asignarles números del teclado al led
