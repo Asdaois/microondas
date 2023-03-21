@@ -114,7 +114,7 @@ CONFIGURAR_RESET
 	RETURN	
 ;Rutina de conversi¢n que retorna el valor  ASCII de
 ;numTecla en W
-CONV_TECLA
+CONV_7SEG
         ADDWF PCL,1
         NOP				; Linea 0 (no se utiliza)
         RETLW	0x06			; Uno
@@ -158,6 +158,7 @@ BARRIDO_LED
 	MOVLW 0x0E              ; N£mero total de teclas + 1
 	MOVWF PORTD
 	MOVF  Num1,W
+	CALL  CONV_7SEG
 	MOVWF PORTC
 	RETURN
 SIGUIENTE
@@ -166,6 +167,7 @@ SIGUIENTE
 	BTFSS STATUS,Z          ; Verifica el estado de Z
 	GOTO  N2
 	MOVF  Num2,W
+	CALL  CONV_7SEG
 	MOVWF PORTC
 	RETURN
 N2	MOVLW 0x3B              ; N£mero total de teclas + 1
@@ -173,6 +175,7 @@ N2	MOVLW 0x3B              ; N£mero total de teclas + 1
 	BTFSS STATUS,Z          ; Verifica el estado de Z
 	GOTO  N3
 	MOVF  Num3,W
+	CALL  CONV_7SEG
 	MOVWF PORTC
 	RETURN
 N3	MOVLW 0x77              ; N£mero total de teclas + 1
@@ -180,6 +183,7 @@ N3	MOVLW 0x77              ; N£mero total de teclas + 1
 	BTFSS STATUS,Z          ; Verifica el estado de Z
 	RETURN
 	MOVF  Num4,W
+	CALL  CONV_7SEG
 	MOVWF PORTC
 	RETURN
 	

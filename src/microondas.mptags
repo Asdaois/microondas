@@ -7,17 +7,19 @@
 !_TAG_REVISION_NAME	MCHPTags	//
 !_TAG_REVISION_VERSION	6.0.1	//
 BANDERAS	C:\Users\josex\projects\assembler\microondas\src\main.asm	21;"	q	line:21
-BARRIDO_LED	C:\Users\josex\projects\assembler\microondas\src\main.asm	127;"	l	line:127
-CHK_COL	C:\Users\josex\projects\assembler\microondas\src\main.asm	56;"	l	line:56
-CONV_TECLA	C:\Users\josex\projects\assembler\microondas\src\main.asm	110;"	l	line:110
-ESPERA1	C:\Users\josex\projects\assembler\microondas\src\main.asm	87;"	l	line:87
-ESPERA2	C:\Users\josex\projects\assembler\microondas\src\main.asm	89;"	l	line:89
-ESPERA3	C:\Users\josex\projects\assembler\microondas\src\main.asm	91;"	l	line:91
-INICIO	C:\Users\josex\projects\assembler\microondas\src\main.asm	173;"	l	line:173
-N2	C:\Users\josex\projects\assembler\microondas\src\main.asm	147;"	l	line:147
-N3	C:\Users\josex\projects\assembler\microondas\src\main.asm	154;"	l	line:154
-NEW_SCAN	C:\Users\josex\projects\assembler\microondas\src\main.asm	47;"	l	line:47
-NEXT_COL	C:\Users\josex\projects\assembler\microondas\src\main.asm	77;"	l	line:77
+BARRIDO_LED	C:\Users\josex\projects\assembler\microondas\src\main.asm	151;"	l	line:151
+CHK_COL	C:\Users\josex\projects\assembler\microondas\src\main.asm	55;"	l	line:55
+CONFIGURAR_RESET	C:\Users\josex\projects\assembler\microondas\src\main.asm	112;"	l	line:112
+CONV_7SEG	C:\Users\josex\projects\assembler\microondas\src\main.asm	117;"	l	line:117
+CONV_TECLA_NUMERO	C:\Users\josex\projects\assembler\microondas\src\main.asm	134;"	l	line:134
+ESPERA1	C:\Users\josex\projects\assembler\microondas\src\main.asm	86;"	l	line:86
+ESPERA2	C:\Users\josex\projects\assembler\microondas\src\main.asm	88;"	l	line:88
+ESPERA3	C:\Users\josex\projects\assembler\microondas\src\main.asm	90;"	l	line:90
+INICIO	C:\Users\josex\projects\assembler\microondas\src\main.asm	199;"	l	line:199
+N2	C:\Users\josex\projects\assembler\microondas\src\main.asm	172;"	l	line:172
+N3	C:\Users\josex\projects\assembler\microondas\src\main.asm	179;"	l	line:179
+NEW_SCAN	C:\Users\josex\projects\assembler\microondas\src\main.asm	46;"	l	line:46
+NEXT_COL	C:\Users\josex\projects\assembler\microondas\src\main.asm	76;"	l	line:76
 NUMTECLA	C:\Users\josex\projects\assembler\microondas\src\main.asm	19;"	q	line:19
 Num1	C:\Users\josex\projects\assembler\microondas\src\main.asm	15;"	q	line:15
 Num2	C:\Users\josex\projects\assembler\microondas\src\main.asm	16;"	q	line:16
@@ -25,9 +27,9 @@ Num3	C:\Users\josex\projects\assembler\microondas\src\main.asm	17;"	q	line:17
 Num4	C:\Users\josex\projects\assembler\microondas\src\main.asm	18;"	q	line:18
 REINICIO_PENDIENTE	C:\Users\josex\projects\assembler\microondas\src\main.asm	23;"	d	line:23
 RESET_COMANDO	C:\Users\josex\projects\assembler\microondas\src\main.asm	25;"	d	line:25
-RESTART	C:\Users\josex\projects\assembler\microondas\src\main.asm	162;"	l	line:162
-SALIR	C:\Users\josex\projects\assembler\microondas\src\main.asm	38;"	l	line:38
-SIGUIENTE	C:\Users\josex\projects\assembler\microondas\src\main.asm	139;"	l	line:139
-TECLA	C:\Users\josex\projects\assembler\microondas\src\main.asm	46;"	l	line:46
-TECLA_ON	C:\Users\josex\projects\assembler\microondas\src\main.asm	84;"	l	line:84
+RESTART	C:\Users\josex\projects\assembler\microondas\src\main.asm	187;"	l	line:187
+SALIR	C:\Users\josex\projects\assembler\microondas\src\main.asm	37;"	l	line:37
+SIGUIENTE	C:\Users\josex\projects\assembler\microondas\src\main.asm	163;"	l	line:163
+TECLA	C:\Users\josex\projects\assembler\microondas\src\main.asm	45;"	l	line:45
+TECLA_ON	C:\Users\josex\projects\assembler\microondas\src\main.asm	83;"	l	line:83
 TEMP	C:\Users\josex\projects\assembler\microondas\src\main.asm	20;"	q	line:20
