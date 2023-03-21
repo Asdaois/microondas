@@ -92,7 +92,7 @@ ESPERA3	BTFSS   PORTA,6         ;Si no se suelta la tecla de la COL 3
 			                          ;Una vez que dej¢ de presionar la tecla
 
 	MOVF   NUMTECLA,W       ; Pone en W el valor de numTecla
-	CALL   CONV_TECLA       ; Llama a la rutina de conversi¢n A ASCII
+	CALL   CONV_TECLA_NUMERO       ; Llama a la rutina de conversi¢n A ASCII
 	MOVWF  TEMP
 	
 	xorlw  RESET_COMANDO
@@ -130,7 +130,24 @@ CONV_TECLA
 	RETLW	0x3F			; Cero
 	RETLW	0x10			; #
 	RETURN
-	
+
+CONV_TECLA_NUMERO
+        ADDWF PCL,1
+        RETLW	0x00				; Linea 0 (no se utiliza)
+        RETLW	0x01			; Uno
+	RETLW	0x02			; Dos
+	RETLW	0x03			; Tres
+	RETLW	0x04			; Cuatro
+	RETLW	0x05			; Cinco
+	RETLW	0x06			; Seis
+	RETLW	0x07			; Siete
+	RETLW	0x08			; Ocho
+	RETLW	0x09     		; Nueve
+	RETLW	0x20			; *
+	RETLW	0x00			; Cero
+	RETLW	0x10			; #
+	RETURN
+		
 BARRIDO_LED
 	BSF  STATUS,C
 	RLF  PORTD,F
