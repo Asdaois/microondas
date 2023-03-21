@@ -21,9 +21,12 @@ TEMP		EQU 0x75
 BANDERAS	EQU 0x76
 CONTADOR_TIEMPO	EQU 0x78
 HELPER		EQU 0x79
+CONTADOR_ALARMA EQU 0X7A
 
 #define REINICIO_PENDIENTE 0
 #define PAUSADO 1
+#define ALARMA_PENDIENTE 2
+#define ALARMA_MOSTRAR 3
 
 #define RESET_COMANDO 0x10
 #define START_PAUSA_COMANDO 0x20
@@ -42,6 +45,20 @@ HELPER		EQU 0x79
 	BANKSEL IOCAF		
 	BTFSC	BANDERAS, REINICIO_PENDIENTE
 	CALL	RESTART
+	
+	BTFSS   BANDERAS, PAUSADO
+	CALL	ENCENDER_MOTOR
+	
+	BTFSC	BANDERAS, PAUSADO
+	CALL	APAGAR_MOTOR
+	
+	banksel PORTE
+	BTFSC   BANDERAS, ALARMA_MOSTRAR
+	bsf  	PORTE, RE1
+	
+	BTFSS	BANDERAS, ALARMA_MOSTRAR
+	bcf	PORTE, RE1
+	
 SALIR	NOP
 	BANKSEL IOCAF		
 	CLRF	IOCAF
@@ -114,6 +131,9 @@ ESPERA3	BTFSS   PORTA,6         ;Si no se suelta la tecla de la COL 3
 	
 	btfss	BANDERAS, PAUSADO ; Si esta pausado no modificar mas nada
 	return 
+	
+	bcf	BANDERAS, ALARMA_MOSTRAR
+	bcf	BANDERAS, ALARMA_PENDIENTE
 		
 	MOVF   	Num3,W
         MOVWF  	Num4
@@ -130,7 +150,6 @@ CONFIGURAR_RESET
 	RETURN	
 
 ALTERNAR_PAUSA_START
-	clrf 	HELPER	; Limpiar helper
 	bsf 	HELPER, PAUSADO	; Setear el bit a modificar
 	movf	HELPER, W	; pasarlo a w
 	xorwf 	BANDERAS, F	; xor operacion
@@ -219,8 +238,11 @@ RESTART
 	MOVWF	Num3
 	MOVLW	0x00
 	MOVWF	Num4
+	CLRF 	HELPER
 	BCF	BANDERAS, REINICIO_PENDIENTE
 	BSF	BANDERAS, PAUSADO
+	bcf	BANDERAS, ALARMA_MOSTRAR
+	bcf	BANDERAS, ALARMA_PENDIENTE
 	RETURN
 
 INICIO	
@@ -326,11 +348,18 @@ CargarSegundosUnidad
 	MOVWF	Num1	
 	return
 
-CambiarAModoAlarma
-	banksel PORTE
-	bsf PORTE, RE0
+CambiarAModoAlarma	
+	bsf BANDERAS, PAUSADO
+	bsf BANDERAS, ALARMA_PENDIENTE
+	bsf BANDERAS, ALARMA_MOSTRAR
 	return
-
+ 
+ALTERNAR_MOSTRAR_ALARMA
+	bsf 	HELPER, ALARMA_MOSTRAR	; Setear el bit a modificar
+	movf	HELPER, W	; pasarlo a w
+	xorwf 	BANDERAS, F	; xor operacion
+	return
+	
 CONTROL_TEMPORIZADOR
         btfsc BANDERAS, PAUSADO
         return; No esta funcionando el temporizador
@@ -343,7 +372,16 @@ CONTROL_TEMPORIZADOR
 	return ; no lo es
 	
 	CLRF CONTADOR_TIEMPO ;Si lo es
-	
 	call Temporizador
+	return
+
+ENCENDER_MOTOR
+	banksel PORTE
+	bsf PORTE, RE0
+	return
+
+APAGAR_MOTOR
+	banksel PORTE
+	bcf PORTE, RE0
 	return
 	END
