@@ -18,7 +18,11 @@ Num3		EQU 0x72
 Num4		EQU 0x73
 NUMTECLA	EQU 0x74 ;             variable usada para guardar el numero asignado a cada tecla
 TEMP		EQU 0x75
+BANDERAS	EQU 0x76
 
+#define REINICIO_PENDIENTE 0
+
+#define RESET_COMANDO 0x10
 ; Inicio del programa
  	ORG	0x00
 	GOTO	INICIO
@@ -26,10 +30,9 @@ TEMP		EQU 0x75
 	BANKSEL INTCON			
 	BTFSC	INTCON, TMR0IF		; Interrupci¢n por cambio de nivel?
 	CALL	BARRIDO_LED
-	BTFSS	INTCON, IOCIF		; Interrupci¢n por cambio de nivel?
-	GOTO	SALIR
+
 	BANKSEL IOCAF		
-	BTFSC	IOCAF, 7		; Interrupci¢n por cambio de nivel en RB0?
+	BTFSC	BANDERAS, REINICIO_PENDIENTE
 	CALL	RESTART
 SALIR	NOP
 	BANKSEL IOCAF		
@@ -91,6 +94,11 @@ ESPERA3	BTFSS   PORTA,6         ;Si no se suelta la tecla de la COL 3
 	MOVF   NUMTECLA,W       ; Pone en W el valor de numTecla
 	CALL   CONV_TECLA       ; Llama a la rutina de conversi¢n A ASCII
 	MOVWF  TEMP
+	
+	xorlw  RESET_COMANDO
+	btfsc STATUS, Z
+	goto CONFIGURAR_RESET
+		
 	MOVF   Num3,W
         MOVWF  Num4
 	MOVF   Num2,W
@@ -101,6 +109,9 @@ ESPERA3	BTFSS   PORTA,6         ;Si no se suelta la tecla de la COL 3
         MOVWF  Num1
 	RETURN
 
+CONFIGURAR_RESET
+	bsf BANDERAS, REINICIO_PENDIENTE
+	RETURN	
 ;Rutina de conversi¢n que retorna el valor  ASCII de
 ;numTecla en W
 CONV_TECLA
@@ -164,6 +175,7 @@ RESTART
 	MOVWF	Num3
 	MOVLW	0x40
 	MOVWF	Num4
+	BCF	BANDERAS, REINICIO_PENDIENTE
 	RETURN
 
 INICIO	

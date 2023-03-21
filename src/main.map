@@ -1,12 +1,12 @@
 MPLINK 4.49, Linker
-Linker Map File - Created Mon Mar 20 23:04:06 2023
+Linker Map File - Created Mon Mar 20 23:24:14 2023
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
                 ---------  ---------  ---------  ---------  ---------
                    .org_0       code   0x000000    program   0x000000
                    .org_1       code   0x000000    program   0x000002
-                   .org_2       code   0x000004    program   0x000134
+                   .org_2       code   0x000004    program   0x00013c
       .config_8007_MAIN.O       code   0x008007    program   0x000002
       .config_8008_MAIN.O       code   0x008008    program   0x000002
 
@@ -16,52 +16,54 @@ Linker Map File - Created Mon Mar 20 23:04:06 2023
                                Start         End      
                            ---------   ---------      
                             0x000000    0x000000      
-                            0x000004    0x00009d      
+                            0x000004    0x0000a1      
                             0x008007    0x008008      
-            157 out of 8455 program addresses used, program memory utilization is 1%
+            161 out of 8455 program addresses used, program memory utilization is 1%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-              BARRIDO_LED   0x00004b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  CHK_COL   0x00001a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-               CONV_TECLA   0x00003c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA1   0x00002a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA2   0x00002c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA3   0x00002e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                   INICIO   0x000074    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                       N2   0x00005d    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                       N3   0x000064    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 NEW_SCAN   0x000014    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 NEXT_COL   0x000027    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  RESTART   0x00006b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                    SALIR   0x00000c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                SIGUIENTE   0x000056    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                    TECLA   0x000013    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 TECLA_ON   0x00002a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+              BARRIDO_LED   0x00004e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  CHK_COL   0x000018    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         CONFIGURAR_RESET   0x00003d    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+               CONV_TECLA   0x00003f    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA1   0x000028    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA2   0x00002a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA3   0x00002c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                   INICIO   0x000078    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N2   0x000060    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N3   0x000067    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEW_SCAN   0x000012    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEXT_COL   0x000025    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  RESTART   0x00006e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    SALIR   0x00000a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                SIGUIENTE   0x000059    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    TECLA   0x000011    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 TECLA_ON   0x000028    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
 
 
 
                               Symbols - Sorted by Address
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                    SALIR   0x00000c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                    TECLA   0x000013    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 NEW_SCAN   0x000014    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  CHK_COL   0x00001a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 NEXT_COL   0x000027    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA1   0x00002a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 TECLA_ON   0x00002a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA2   0x00002c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA3   0x00002e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-               CONV_TECLA   0x00003c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-              BARRIDO_LED   0x00004b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                SIGUIENTE   0x000056    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                       N2   0x00005d    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                       N3   0x000064    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  RESTART   0x00006b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                   INICIO   0x000074    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    SALIR   0x00000a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    TECLA   0x000011    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEW_SCAN   0x000012    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  CHK_COL   0x000018    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEXT_COL   0x000025    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 TECLA_ON   0x000028    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA1   0x000028    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA2   0x00002a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA3   0x00002c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         CONFIGURAR_RESET   0x00003d    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+               CONV_TECLA   0x00003f    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+              BARRIDO_LED   0x00004e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                SIGUIENTE   0x000059    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N2   0x000060    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N3   0x000067    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  RESTART   0x00006e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                   INICIO   0x000078    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
 
 
