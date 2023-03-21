@@ -1,5 +1,6 @@
-#include "p16f1787.inc"
-#include "mimacro.INC"
+; PIC16F1787 Configuration Bit Settings
+; Assembly source line config statements
+#include <p16f1787.inc>
 ; CONFIG1
 ; __config 0xFFE4
 	__CONFIG _CONFIG1, _FOSC_INTOSC & _WDTE_OFF & _PWRTE_OFF & _MCLRE_ON & _CP_OFF & _CPD_OFF & _BOREN_ON & _CLKOUTEN_OFF & _IESO_ON & _FCMEN_ON
@@ -7,327 +8,206 @@
 ; __config 0xFFFF
 	__CONFIG _CONFIG2, _WRT_OFF & _VCAPEN_OFF & _PLLEN_ON & _STVREN_ON & _BORV_LO & _LPBOR_OFF & _LVP_ON
 
-CBLOCK 0x70 ;Ran comun
-	tecla_presionada
-	tekl4pul5        ;Registro donde se almacenarï¿½ el valor de la tecla pulsada
-	c0mpparadD0r ;Registro que serï¿½ el comparador para el escaner de teclado
-	Sit3cl4pus     ;Registro de bucle para pausar o leer de corrido
-	Hhayrt3cla     ;Registro que permite saber si hay una tecla pulsada
+#define COMANDO_EMPEZAR 0x0A 	; * -> Start
+#define COMANDO_PAUSAR 0x0A 	; * -> Pausa
+#define COMANDO_RESETEAR 0x0C 	; # -> Reset
 
-	puntero_numero_actual
-	numero_posicion_uno
-	numero_posicion_dos
-	numero_posicion_tres
-	numero_posicion_cuatro
+; Variables
+Num1 EQU 0x70
+Num2 EQU 0x71
+Num3 EQU 0x72
+Num4 EQU 0x73
+NUMTECLA EQU 0x74 ; variable usada para guardar el numero asignado a cada tecla
+TEMP EQU 0x75
+; Inicio del programa
 
-	display_actual
+	ORG 0x00
+	GOTO INICIO
+	ORG 0x04 ; Vector de interrupci¢n
+	BANKSEL INTCON
+	BTFSC INTCON, TMR0IF ; Interrupci¢n por desborde del timer0?
+	CALL BARRIDO_LED
+SALIR 
+	NOP
+	BANKSEL IOCAF
+	CLRF IOCAF
+	BANKSEL INTCON
+	BCF INTCON,IOCIF ; Se desactiva la bandera de interrupci¢n
+	BCF INTCON,TMR0IF
+	RETFIE
+TECLA 
+	NOP
+NEW_SCAN
+	CLRF NUMTECLA ; Borra el contenido de numTecla
+	INCF NUMTECLA,F ; Inicializa numTecla
+	BANKSEL PORTA
+	MOVLW 0xFE ; Pone a 0 la primera Fila ( RA0 )
+	MOVWF PORTA
+	NOP ; Espera estabilizar la se¤al
 
-	temp
-ENDC	
+;Rutina que verifica el estado de las columnas
 
-	org 0x0
-		goto Principal
-	org 04
-		goto Interrupcion
+CHK_COL
+	;Verifica si se ha presionado alguna tecla
+	BTFSS PORTA,4 ; Columna 1=0?
+	GOTO TECLA_ON ; Sale si se ha pulsado una tecla
+	INCF NUMTECLA,F ; Incrementa n£mero de tecla
+	BTFSS PORTA,5 ; Columna 2=0?
+	GOTO TECLA_ON ; Sale si se ha pulsado una tecla
+	INCF NUMTECLA,F ; Incrementa n£mero de tecla
+	BTFSS PORTA,6 ; Columna 3=0?
+	GOTO TECLA_ON ; Sale si se ha pulsado una tecla
+	INCF NUMTECLA,F ; Incrementa n£mero de tecla
+	;Verifica si se ha recorrido todo el teclado
+	MOVLW 0x0D ; N£mero total de teclas + 1
+	XORWF NUMTECLA,W ; Realiza d&#39;13&#39; XOR numTecla
+	BTFSC STATUS,Z ; Verifica el estado de Z
+	GOTO NEW_SCAN ; Z=1?, Son iguales (full Scan) , Z=0?
 
-Principal
+;, Son diferentes,
+
+NEXT_COL
+	BSF STATUS,C ; Enciende el carry para poner en &quot;1&quot; la FILA recorrida
+	RLF PORTA,F ;realiza corrimiento a la izquierda
+	;, pone a cero la siguiente FILA
+	GOTO CHK_COL ; Escanea la sig. COLUMNA
+	;Rutina que procesa la tecla capturada
+	TECLA_ON
+	;Rutinas que esperan a que se deje de presionar la tecla
+	;Esto para evitar ECO
+
+ESPERA1 
+	BTFSS PORTA,4 ;Si no se suelta la tecla de la COL 1
+	GOTO ESPERA1 ; vuelve a esperar.
+ESPERA2 
+	BTFSS PORTA,5 ;Si no se suelta la tecla de la COL 2
+	GOTO ESPERA2 ;vuelve a esperar.
+ESPERA3 BTFSS PORTA,6 ;Si no se suelta la tecla de la COL 3
+	GOTO ESPERA3 ;vuelve a esperar.
+	;Una vez que dej¢ de presionar la tecla
+	MOVF NUMTECLA,W ; Pone en W el valor de numTecla
+	XORLW COMANDO_RESETEAR ; Se presiono el boton resetar
+	BTFSC STATUS, Z
+	GOTO RESTART
+ROTAR_NUMEROS	
+	MOVWF TEMP
+	MOVF Num3,W
+	MOVWF Num4
+	MOVF Num2,W
+	MOVWF Num3
+	MOVF Num1,W
+	MOVWF Num2
+	MOVF TEMP,W
+	MOVWF Num1
+	RETURN
+;Rutina de conversi¢n que retorna el valor ASCII de
+;numTecla en W
+CONV_TECLA
+	ADDWF PCL,1
+	RETLW 0x3F ; Cero
+	RETLW 0x06 ; Uno
+	RETLW 0x5B ; Dos
+	RETLW 0x4F ; Tres
+	RETLW 0x66 ; Cuatro
+	RETLW 0x6D ; Cinco
+	RETLW 0x7D ; Seis
+	RETLW 0x07 ; Siete
+	RETLW 0x7F ; Ocho
+	RETLW 0x6F ; Nueve
+	RETLW 0x04 ; * -> Start
+	RETLW 0x3F ; Cero
+	RETLW 0x10 ; # -> Reset
+	RETURN
+BARRIDO_LED
+	BSF STATUS,C
+	RLF PORTD,F
+	MOVLW 0xEF ; N£mero total de teclas + 1
+	XORWF PORTD,W ;XOR numTecla
+	BTFSS STATUS,Z ; Verifica el estado de Z
+	GOTO SIGUIENTE
+	MOVLW 0x0E ; N£mero total de teclas + 1
+	MOVWF PORTD
+	MOVF Num1,W
+	CALL CONV_TECLA ; Llama a la rutina de conversi¢n A ASCII
+	MOVWF PORTC
+	RETURN
+SIGUIENTE
+	MOVLW 0x1D ; N£mero total de teclas + 1
+	XORWF PORTD,W ; Realiza d&#39;13&#39; XOR numTecla
+	BTFSS STATUS,Z ; Verifica el estado de Z
+	GOTO N2
+	MOVF Num2,W
+	CALL CONV_TECLA ; Llama a la rutina de conversi¢n A ASCII
+	MOVWF PORTC
+	RETURN
+N2 
+	MOVLW 0x3B ; N£mero total de teclas + 1
+	XORWF PORTD,W ; Realiza d&#39;13&#39; XOR numTecla
+	BTFSS STATUS,Z ; Verifica el estado de Z
+	GOTO N3
+	MOVF Num3,W
+	CALL CONV_TECLA ; Llama a la rutina de conversi¢n A ASCII
+	MOVWF PORTC
+	RETURN
+N3 
+	MOVLW 0x77 ; N£mero total de teclas + 1
+	XORWF PORTD,W ; Realiza d&#39;13&#39; XOR numTecla
+	BTFSS STATUS,Z ; Verifica el estado de Z
+	RETURN
+	MOVF Num4,W
+	CALL CONV_TECLA ; Llama a la rutina de conversi¢n A ASCII
+	MOVWF PORTC
+	RETURN
+RESTART
+	CLRF TEMP
+	CLRF Num1
+	CLRF Num2
+	CLRF Num3
+	CLRF Num4
+	RETURN
+INICIO
 	BANKSEL OSCCON
 	MOVLW 0x6F
-	MOVWF OSCCON ; Reloj interno a 4 Mhz sin PLL
-	banksel OPTION_REG
-	movlw 0x04
-	movwf OPTION_REG ; Preescalador 1:32
-	banksel INTCON
-	; INTERRUPT CONTROL REGISTER
-	movlw	0xE8	; 1110 1000
-	
-	call ConfigurarPuertos
-	call IN1ci0t3cla4do
-
-	movlw 0x01
-	movwf numero_posicion_uno
-	movlw 0x05
-	movwf numero_posicion_dos
-	movlw 0x07
-	movwf numero_posicion_tres
-	movlw 0x09
-	movwf numero_posicion_cuatro
-	movlw 0x01
-	movwf display_actual
-	goto Loop
-
-Interrupcion
-	retfie ; Returnar de interrupcion
-	
-Loop
-	call 	Leertecla               ;Pausamos programa hasta que se pulse una tecla
-	call	ManejarTimer
-	goto 	Loop
-
-Mostrar7Segmentos
-	; limpiar puntero incorrecto
-	btfss display_actual, 0
-	bcf PORTC, 4
-
-	btfss display_actual, 1
-	bcf PORTC, 5
-
-	btfss display_actual, 2
-	bcf PORTC, 6
-
-	btfss display_actual, 3
-	bcf PORTC, 7
-  ; mostrar puntero correcto
-	btfsc display_actual, 0
-	bsf PORTC, 4
-
-	btfsc display_actual, 1
-	bsf PORTC, 5
-
-	btfsc display_actual, 2
-	bsf PORTC, 6
-
-	btfsc display_actual, 3
-	bsf PORTC, 7
-
-  ; escoger numero a mostrar
-	btfsc display_actual, 0
-	movf numero_posicion_uno, W
-
-	btfsc display_actual, 1
-	movf numero_posicion_dos, W
-
-	btfsc display_actual, 2
-	movf numero_posicion_tres, W
-
-	btfsc display_actual, 3
-	movf numero_posicion_cuatro, W
-
-	; mostrar numero en pantalla 
-	call 	Convertir7Segmentos
-	banksel PORTD
-	movwf PORTD
-	
-	return
-		
-Leertecla
-	banksel IOCBF 
-	movf IOCBF, W	
-	xorlw 0x00
-	btfsc 	STATUS, Z	; Si es 0 un boton fue presionado
-	return
-	
-	movwf   tecla_presionada  
-	return
-	
-ConfigurarPuertos
-	; Puertos como E/S digital
-	banksel ANSELA	
-	clrf 	ANSELA
-	clrf 	ANSELB
-	clrf 	ANSELD
-	; Configurar purtos 
-	banksel TRISD
-	CLRF 	TRISD	; Salida
-	CLRF	TRISC	; Salida
-	banksel TRISB
-	movlw	0xF0	;
-	movwf	TRISB	; 0-3 Salida 4-7 Entrada
-	
-	;banksel WPUB	; Weak pull-up - evitar resistencias
-;	movwf 	WPUB
-
-	banksel	PORTD
-	CLRF 	PORTD
-	clrf	PORTC
-
-	; INTERRUPT-ON-CHANGE NEGATIVE EDGE REGISTER
-	banksel IOCBN
-	movlw	0xF0
-	movwf	IOCBN	;flanco de bajada para RA0, RA1 y RA2
-	banksel IOCBF
-	clrf IOCBF
-	return
-
-ManejarTimer
-	banksel 	INTCON
-	; Revisar Timer1 Overflow Interrupt Flag bit
-	btfss 	INTCON, TMR0IF 
-	return 	; No se ha desbordado
-	bcf 	INTCON, TMR0IF ; Resetear manualmente
-	banksel 	TMR0
-	movlw	.100 ; Aproximadamenet 5ms
-	movwf	TMR0; inicio nuevamente
-
-	call 	MoverPuntero
-	call 	Mostrar7Segmentos
-	return
-
-MoverPuntero
-	; Mover puntero a la izquierda
-	rlf 	display_actual, F
-	btfss 	display_actual, 4 ; Si esta en la posicion 4
-	return
-	
-	; Poner puntero en posicion inicial
-	movlw 0x1
-	movwf display_actual
-	return
-
-Convertir7Segmentos; Tabla 7 segmentos catodo comun
-	brw;			xgfe dcba
-	retlw 	0x40; 0-> 0100 0000
-	retlw 	0x79; 1-> 0111 1001
-	retlw 	0x24; 2-> 0010 0100
-	retlw 	0x30; 3-> 0011 0000
-	retlw 	0x19; 4-> 0001 1001
-	retlw 	0x12; 5-> 0001 0010
-	retlw 	0x03; 6-> 0000 0011
-	retlw 	0x78; 7-> 0111 1000
-	retlw 	0x00; 8-> 0000 0000
-	retlw 	0x18; 9-> 0001 1000
-	retlw   0x02; 
-	retlw   0x03; 
-	retlw   0x04; 
-	retlw   0x05; 
-	retlw   0x06; 14 // Asterisco
-	retlw   0x07; 15 // Numeral
-	retlw   0x08; 16 //
-	retlw 	0x7F; apagar todos los displays
-	
-
-; ....................www.rodrigocarita.com................................
-; Librerï¿½a para teclado matricial 4x4
-;Versiï¿½n : 1.0
-;..:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-;Atencion: Esta librerï¿½a funciona con la macro en Versiï¿½n 1.2 y superiores.
-;:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-;   | 1 | 2 | 3 | A |   --->PORTB,0
-;   | 4 | 5 | 6 | B |   ---> PORTB,1
-;   | 7 | 8 | 9 | C |    --->PORTB,2
-;   | * | 0 | # | D |   ---> PORTB,3
-;      |    |    |    |
-;    RB4 RB5 RB6 RB7
-;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-;Modo de conexiï¿½n es sencilla, con el teclado mirï¿½ndonos, los pines se conectan de modo
-;                                    RB0,RB1,RB2,RB3,...,RB7,
-;-----------------------------------------------------------------------------------------------------------------------------	
-
-IN1ci0t3cla4do  		; Subrutina de configuraciï¿½n de Teclado. Activa las resistencias PULL-UP
-	banksel TRISB           			;Vamos al banco 1
-	MOVLW b'11110000' 	; Configuramos las columnas como salida y las filas como entrada
-	MOVWF TRISB
-	banksel OPTION_REG			;del puerto B.
-	BCF OPTION_REG,7		;Activa las resistencias tipo PULL-UP del pic
-	BANKSEL PORTB           			;Regresamos al Banco 0
-	CLRF tekl4pul5		;Limpiamos memorias de teclapulsada
-	CLRF Sit3cl4pus		;Limpiamos permisos para bucles
-	RETURN				;Salimos de la subrutina de configuraciï¿½n
-
-Tttest3aTecld0o							;tï¿½tulo de subrutina para escaner de teclado	
-	cargarvalor .0,Hhayrt3cla				;Limpiamos el valor de comprobaciï¿½n si hubo una tecla pulsada
-	cargarvalor b'11111110',PORTB			;Cargamos el primer valor para escanear la primera fila
-	nop										;Tiempo paranï¿½ico
-	copiarregistro PORTB,c0mpparadD0r		;Leemos el puerto B para ver si hay un botï¿½n pulsado
-	csi c0mpparadD0r,b'11101110',BoTt0Nn1	;Iniciamos el Escaneo, Se pulsï¿½ la primera columnï¿½?	
-	csi c0mpparadD0r,b'11011110',BoTt0Nn2	;Se pulsï¿½ la segunda columna?	
-	csi c0mpparadD0r,b'10111110',BoTt0Nn3	;Se pulsï¿½ la tercera columna?
-	csi c0mpparadD0r,b'01111110',BoTt0NnA	;Se pulsï¿½ la cuarta columna?
-
-	cargarvalor b'11111101',PORTB			;Cargamos el segundo valor para escanear la segunda fila
-	nop										;Tiempo paranï¿½ico
-	copiarregistro PORTB,c0mpparadD0r		 ;Leemos el puerto B para ver si hay un botï¿½n pulsado
-	csi c0mpparadD0r,b'11101101',BoTt0Nn4         ;Iniciamos el Escaneo, Se pulsï¿½ la primera columnï¿½?	
-	csi c0mpparadD0r,b'11011101',BoTt0Nn5         ;Se pulsï¿½ la segunda columna?	
-	csi c0mpparadD0r,b'10111101',BoTt0Nn6         ;Se pulsï¿½ la tercera columna?
-	csi c0mpparadD0r,b'01111101',BoTt0NnB         ;Se pulsï¿½ la cuarta columna?
-
-	cargarvalor b'11111011',PORTB			;Cargamos el tercer valor para escanear la tercera fila	
-	nop                                                                                    ;Tiempo paranï¿½ico 
-	copiarregistro PORTB,c0mpparadD0r                  ;Leemos el puerto B para ver si hay un botï¿½n pulsado
-	csi c0mpparadD0r,b'11101011',BoTt0Nn7         ;Iniciamos el Escaneo, Se pulsï¿½ la primera columnï¿½?	
-	csi c0mpparadD0r,b'11011011',BoTt0Nn8         ;Se pulsï¿½ la segunda columna?	
-	csi c0mpparadD0r,b'10111011',BoTt0Nn9         ;Se pulsï¿½ la tercera columna?
-	csi c0mpparadD0r,b'01111011',BoTt0NnC         ;Se pulsï¿½ la cuarta columna?
-	cargarvalor b'11110111',PORTB			;Cargamos el cuarto valor para escanear la cuarta fila	
-	nop                                                                                    ;Tiempo paranï¿½ico 
-	copiarregistro PORTB,c0mpparadD0r                  ;Leemos el puerto B para ver si hay un botï¿½n 	pulsado
-	csi c0mpparadD0r,b'11100111',BoTt0NnAST     ;Iniciamos el Escaneo, Se pulsï¿½ la primera columnï¿½?	
-	csi c0mpparadD0r,b'11010111',BoTt0Nn0         ;Se pulsï¿½ la segunda columna?	
-	csi c0mpparadD0r,b'10110111',BoTt0NnMICH   ;Se pulsï¿½ la tercera columna? 
-	csi c0mpparadD0r,b'01110111',BoTt0NnD         ;Se pulsï¿½ la cuarta columna?
-	csi c0mpparadD0r,b'11110111',SinTecl4	 ; NO SE PULSï¿½ NADA??	
-
-SinTecl4					;Subrutina para cuando no haya alguna tecla pulsada.		
-	cargarvalor .1,Hhayrt3cla	; Carga el valor de 1 en el registro Hhayrt3cla 
-	BTFSS Sit3cl4pus,0 			;Esta en el modo de pausa?
-	RETURN						;Caso falso: Sale de la subrutina continuando con el programa principal
-	GOTO Tttest3aTecld0o			;Caso verdadero: Continua testeando el teclado hasta que una tecla se pulse
-
-BoTt0Nn0					;Subrutina para cuando se presione el botï¿½n 0
-	cargarvalor 0x0,tekl4pul5		;Carga el valor de "0" en el registro de respuesta tekl4pul5 
-	RETURN						;Sale de la subrutina de teclado
-
-BoTt0Nn1					;Subrutina para cuando se presione el botï¿½n 1
-	cargarvalor 0x1,tekl4pul5           ;Carga el valor de "1" en el registro de respuesta tekl4pul5 
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0Nn2					;Subrutina para cuando se presione el botï¿½n 2
-	cargarvalor 0x2,tekl4pul5           ;Carga el valor de "2" en el registro de respuesta tekl4pul5 
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0Nn3					;Subrutina para cuando se presione el botï¿½n 3
-	cargarvalor 0x3,tekl4pul5           ;Carga el valor de "3" en el registro de respuesta tekl4pul5 
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0Nn4					;Subrutina para cuando se presione el botï¿½n 4
-	cargarvalor 0x4,tekl4pul5           ;Carga el valor de "4" en el registro de respuesta tekl4pul5 
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0Nn5					;Subrutina para cuando se presione el botï¿½n 5
-	cargarvalor 0x5,tekl4pul5           ;Carga el valor de "5" en el registro de respuesta tekl4pul5 
-	RETURN                  	                                ;Sale de la subrutina de teclado
-
-BoTt0Nn6					;Subrutina para cuando se presione el botï¿½n 6
-	cargarvalor 0x6,tekl4pul5           ;Carga el valor de "6" en el registro de respuesta tekl4pul5 
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0Nn7					;Subrutina para cuando se presione el botï¿½n 7
-	cargarvalor 0x7,tekl4pul5           ;Carga el valor de "7" en el registro de respuesta tekl4pul5 
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0Nn8					;Subrutina para cuando se presione el botï¿½n 8
-	cargarvalor 0x8,tekl4pul5           ;Carga el valor de "8" en el registro de respuesta tekl4pul5 
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0Nn9					;Subrutina para cuando se presione el botï¿½n 9	
-	cargarvalor 0x9,tekl4pul5           ;Carga el valor de "9" en el registro de respuesta tekl4pul5 
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0NnA					;Subrutina para cuando se presione el botï¿½n A
-	cargarvalor 0xA,tekl4pul5        ;Carga el valor de "10" en el registro de respuesta tekl4pul5
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0NnB					;Subrutina para cuando se presione el botï¿½n B
-	cargarvalor 0xB,tekl4pul5        ;Carga el valor de "11" en el registro de respuesta tekl4pul5
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0NnC					;Subrutina para cuando se presione el botï¿½n C
-	cargarvalor 0xC,tekl4pul5        ;Carga el valor de "12" en el registro de respuesta tekl4pul5
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0NnD					;Subrutina para cuando se presione el botï¿½n D
-	cargarvalor 0xD,tekl4pul5        ;Carga el valor de "13" en el registro de respuesta tekl4pul5
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0NnAST					;Subrutina para cuando se presione el botï¿½n *	
-	cargarvalor 0xE,tekl4pul5        ;Carga el valor de "14" en el registro de respuesta tekl4pul5
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-BoTt0NnMICH					;Subrutina para cuando se presione el botï¿½n #
-	cargarvalor 0xF,tekl4pul5        ;Carga el valor de "15" en el registro de respuesta tekl4pul5
-	RETURN                                                  ;Sale de la subrutina de teclado
-
-; Revisa las ï¿½ltimas actualizaciones de la librerï¿½a en:
-;......................................................................... rodrigocarita.com ..................................................................................................
-	END
+	MOVWF OSCCON ; Reloj interno a 4 mhz sin PLL
+	BANKSEL ANSELD
+	CLRF ANSELD ; puertos D y E como digitales
+	CLRF ANSELA
+	BANKSEL TRISD
+	CLRF TRISD ; 7 segmentos
+	CLRF TRISC ; 7 segmentos
+	; Configurar teclado matricial
+	MOVLW 0xF0
+	MOVWF TRISA ;RB0-RB3 como SALIDA, RB4-RB7 como ENTRADA
+	BANKSEL INTCON
+	MOVLW 0XE8
+	MOVWF INTCON
+	BANKSEL OPTION_REG
+	MOVLW 0X03
+	MOVWF OPTION_REG
+	BANKSEL TMR0
+	MOVLW 0x00
+	MOVWF TMR0
+	BANKSEL WPUA
+	MOVLW 0xF0
+	MOVWF WPUA
+	BANKSEL IOCAP
+	MOVLW 0x80
+	MOVWF IOCAP ; Activo las interrupciones por flanco de subida para RA7
+	MOVLW 0x40
+	MOVWF Num1
+	MOVLW 0x40
+	MOVWF Num2
+	MOVLW 0x40
+	MOVWF Num3
+	MOVLW 0x40
+	MOVWF Num4
+	BANKSEL PORTC
+	MOVLW 0x40
+	MOVWF PORTC
+	BANKSEL PORTD
+	MOVLW 0x0E
+	MOVWF PORTD
+	call RESTART
+	CALL TECLA
+	GOTO $-1
+END

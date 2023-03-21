@@ -1,12 +1,12 @@
 MPLINK 4.49, Linker
-Linker Map File - Created Mon Mar 20 16:14:01 2023
+Linker Map File - Created Mon Mar 20 20:08:10 2023
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
                 ---------  ---------  ---------  ---------  ---------
                    .org_0       code   0x000000    program   0x000000
                    .org_1       code   0x000000    program   0x000002
-                   .org_2       code   0x000004    program   0x000216
+                   .org_2       code   0x000004    program   0x000132
       .config_8007_MAIN.O       code   0x008007    program   0x000002
       .config_8008_MAIN.O       code   0x008008    program   0x000002
 
@@ -16,76 +16,54 @@ Linker Map File - Created Mon Mar 20 16:14:01 2023
                                Start         End      
                            ---------   ---------      
                             0x000000    0x000000      
-                            0x000004    0x00010e      
+                            0x000004    0x00009c      
                             0x008007    0x008008      
-            270 out of 8455 program addresses used, program memory utilization is 3%
+            156 out of 8455 program addresses used, program memory utilization is 1%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                 BoTt0Nn0   0x0000df    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn1   0x0000e2    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn2   0x0000e5    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn3   0x0000e8    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn4   0x0000eb    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn5   0x0000ee    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn6   0x0000f1    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn7   0x0000f4    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn8   0x0000f7    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn9   0x0000fa    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0NnA   0x0000fd    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-               BoTt0NnAST   0x000109    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0NnB   0x000100    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0NnC   0x000103    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0NnD   0x000106    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-              BoTt0NnMICH   0x00010c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-        ConfigurarPuertos   0x000041    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-      Convertir7Segmentos   0x000064    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-           IN1ci0t3cla4do   0x000077    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-             Interrupcion   0x00001a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                Leertecla   0x00003a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                     Loop   0x00001b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-             ManejarTimer   0x000054    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-        Mostrar7Segmentos   0x00001e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-             MoverPuntero   0x00005e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                Principal   0x000005    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 SinTecl4   0x0000da    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-          Tttest3aTecld0o   0x000080    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+              BARRIDO_LED   0x000048    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  CHK_COL   0x000015    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+               CONV_TECLA   0x000039    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA1   0x000025    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA2   0x000027    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA3   0x000029    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                   INICIO   0x000072    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N2   0x00005c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N3   0x000064    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEW_SCAN   0x00000f    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEXT_COL   0x000022    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  RESTART   0x00006c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+            ROTAR_NUMEROS   0x00002f    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    SALIR   0x000007    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                SIGUIENTE   0x000054    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    TECLA   0x00000e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 TECLA_ON   0x000025    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
 
 
 
                               Symbols - Sorted by Address
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                Principal   0x000005    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-             Interrupcion   0x00001a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                     Loop   0x00001b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-        Mostrar7Segmentos   0x00001e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                Leertecla   0x00003a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-        ConfigurarPuertos   0x000041    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-             ManejarTimer   0x000054    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-             MoverPuntero   0x00005e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-      Convertir7Segmentos   0x000064    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-           IN1ci0t3cla4do   0x000077    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-          Tttest3aTecld0o   0x000080    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 SinTecl4   0x0000da    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn0   0x0000df    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn1   0x0000e2    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn2   0x0000e5    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn3   0x0000e8    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn4   0x0000eb    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn5   0x0000ee    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn6   0x0000f1    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn7   0x0000f4    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn8   0x0000f7    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0Nn9   0x0000fa    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0NnA   0x0000fd    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0NnB   0x000100    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0NnC   0x000103    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 BoTt0NnD   0x000106    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-               BoTt0NnAST   0x000109    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-              BoTt0NnMICH   0x00010c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    SALIR   0x000007    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    TECLA   0x00000e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEW_SCAN   0x00000f    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  CHK_COL   0x000015    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEXT_COL   0x000022    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 TECLA_ON   0x000025    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA1   0x000025    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA2   0x000027    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA3   0x000029    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+            ROTAR_NUMEROS   0x00002f    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+               CONV_TECLA   0x000039    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+              BARRIDO_LED   0x000048    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                SIGUIENTE   0x000054    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N2   0x00005c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N3   0x000064    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  RESTART   0x00006c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                   INICIO   0x000072    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
 
 

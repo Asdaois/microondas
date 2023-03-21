@@ -34,5 +34,9 @@ palabras, estos no deben apagarse mientras se ajusta los datos.
   - [X] implementar teclado matricial
   - [X] implementar asignarles números del teclado al led
 
-- [ ] Segunda
-  - [ ] guardar el valor que se presione en el teclado, de manera rotativa
+- [X] Segunda
+  - [X] guardar el valor que se presione en el teclado, de manera rotativa
+
+- [X] Tercera
+  - [ ] Cuando se presione start Aplicar temporizador de manera regresiva 
+  - [ ] Cuando se presione reset reiniciar a valores 0000 
