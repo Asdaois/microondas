@@ -21,6 +21,9 @@ TEMP		EQU 0x75
 BANDERAS	EQU 0x76
 
 #define REINICIO_PENDIENTE 0
+#define DESCENDIENDO 1
+#define PAUSADO 2
+#define ALARMA_ACTIVADA
 
 #define RESET_COMANDO 0x10
 ; Inicio del programa
@@ -206,10 +209,12 @@ INICIO
 	BANKSEL ANSELD
 	CLRF	ANSELD     ; puertos D y E como digitales
 	CLRF	ANSELA
+	CLRF	ANSELE
 	
 	BANKSEL TRISD
 	CLRF	TRISD      ; Puertos D y E como salidas
 	CLRF	TRISC
+	CLRF	TRISE
 	MOVLW  	0xF0
 	MOVWF   TRISA	   ;RB0-RB3 como SALIDA, RB4-RB7 como ENTRADA
 	
@@ -238,6 +243,71 @@ INICIO
 	BANKSEL PORTD
 	MOVLW	0x0E
 	MOVWF	PORTD
+	CLRF	PORTE
 	CALL	TECLA
 	GOTO $-1
+
+Temporizador
+	; Temporizador
+	; Funciona pidiendo prestado numeros a las unidades mas altas
+	; basicamente es una resta manual de todos los numeros
+	; decimas pide prestado a segundos
+	; segundos pide prestado a minutos
+	; Si todas las unidades son cero entonces cambia a modo de alarma
+	goto TemporizadorNum1		
+TemporizadorFin
+	return
+	
+TemporizadorNum1
+	movf	Num1, W
+	xorlw	0x0
+	btfsc 	STATUS, Z 	; si son iguales cambia el numero
+	goto TemporizadorNum2
+	decf Num1, F 
+	goto TemporizadorFin
+
+TemporizadorNum2
+	movf	Num2, W
+	xorlw	0x0
+	btfsc 	STATUS, Z 	; si son iguales cambia el numero
+	goto 	TemporizadorNum3
+	call 	CargarSegundosUnidad
+	decf 	Num2, F 
+	goto 	TemporizadorFin
+	
+TemporizadorNum3	
+	movf	Num3, W
+	xorlw	0x0
+	btfsc 	STATUS, Z 	; si son iguales cambia el numero
+	goto 	TemporizadorNum4
+	call 	CargarSegundosDecima
+	decf 	Num3, F 
+	goto 	TemporizadorFin
+
+TemporizadorNum4
+	movf	Num4, W
+	xorlw	0x0
+	btfsc 	STATUS, Z 	; si son iguales cambia el numero
+	goto 	CambiarAModoAlarma
+	call 	CargarMinutosUnidad
+	decf 	Num4, F 
+	goto 	TemporizadorFin
+
+; Manejar Numeros prestado
+CargarMinutosUnidad
+	MOVLW	0X9
+	MOVF	Num3
+CargarSegundosDecima
+	MOVLW	0x5
+	MOVF	Num2
+CargarSegundosUnidad
+	MOVLW 	0x9
+	MOVF	Num1	
+	return
+
+CambiarAModoAlarma
+	banksel PORTE
+	bsf PORTE, RE0
+	return
+	
 	END
