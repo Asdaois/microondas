@@ -1,4 +1,4 @@
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE  1
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -48,402 +48,442 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00032 #define START_PAUSA_COMANDO 0x20
                       00033 ; Inicio del programa
 0000                  00034         ORG     0x00
-0000   28A6           00035         GOTO    INICIO
+0000   28A9           00035         GOTO    INICIO
 0004                  00036         ORG     0x04                    ; Vector de interrupci¢n
 0004   0020           00037         BANKSEL INTCON                  
 0005   190B           00038         BTFSC   INTCON, TMR0IF  ; Interrupci¢n por timer0?
-0006   2074           00039         CALL    BARRIDO_LED
+0006   2077           00039         CALL    BARRIDO_LED
                       00040         
                       00041         
 0007   190B           00042         BTFSC   INTCON, TMR0IF          ; Interrupci¢n por cambio de nivel?
-0008   20F8           00043         CALL    CONTROL_TEMPORIZADOR
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE  2
+0008   20FE           00043         CALL    CONTROL_TEMPORIZADOR
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
                       00044         
-0009   0027           00045         BANKSEL IOCAF           
-000A   1876           00046         BTFSC   BANDERAS, REINICIO_PENDIENTE
-000B   2098           00047         CALL    RESTART
+0009   0020           00045         banksel INTCON
+000A   190B           00046         BTFSC   INTCON, TMR0IF          ; Interrupci¢n por cambio de nivel?
+000B   2110           00047         CALL    CONTROL_ALARMA
                       00048         
-000C   1CF6           00049         BTFSS   BANDERAS, PAUSADO
-000D   2102           00050         CALL    ENCENDER_MOTOR
-                      00051         
-000E   18F6           00052         BTFSC   BANDERAS, PAUSADO
-000F   2105           00053         CALL    APAGAR_MOTOR
-                      00054         
-0010   0020           00055         banksel PORTE
-0011   19F6           00056         BTFSC   BANDERAS, ALARMA_MOSTRAR
-0012   1490           00057         bsf     PORTE, RE1
+000C   0027           00049         BANKSEL IOCAF           
+000D   1876           00050         BTFSC   BANDERAS, REINICIO_PENDIENTE
+000E   209B           00051         CALL    RESTART
+                      00052         
+000F   1CF6           00053         BTFSS   BANDERAS, PAUSADO
+0010   210A           00054         CALL    ENCENDER_MOTOR
+                      00055         
+0011   18F6           00056         BTFSC   BANDERAS, PAUSADO
+0012   210D           00057         CALL    APAGAR_MOTOR
                       00058         
-0013   1DF6           00059         BTFSS   BANDERAS, ALARMA_MOSTRAR
-0014   1090           00060         bcf     PORTE, RE1
-                      00061         
-0015   0000           00062 SALIR   NOP
-0016   0027           00063         BANKSEL IOCAF           
-0017   0193           00064         CLRF    IOCAF
-0018   0020           00065         BANKSEL INTCON
-0019   100B           00066         BCF     INTCON,IOCIF            ; Se desactiva la bandera de interrupci¢n
-001A   110B           00067         BCF     INTCON,TMR0IF
-001B   0009           00068         RETFIE
-                      00069 
-001C   0000           00070 TECLA   NOP
-001D                  00071 NEW_SCAN    
-001D   01F4           00072         CLRF  NUMTECLA     ; Borra el contenido de numTecla
-001E   0AF4           00073         INCF  NUMTECLA,F   ; Inicializa numTecla
-001F   0020           00074         BANKSEL PORTA
-0020   30FE           00075         MOVLW 0xFE         ; Pone a 0 la primera Fila ( RA0 )
-0021   008C           00076         MOVWF PORTA
-0022   0000           00077         NOP                ; Espera estabilizar la se¤al
-                      00078            
-                      00079                            ;Rutina que verifica el estado de las columnas
-0023                  00080 CHK_COL
-                      00081                                   ;Verifica si se ha presionado alguna tecla
-0023   1E0C           00082         BTFSS PORTA,4       ; Columna 1=0?
-0024   2833           00083         GOTO  TECLA_ON     ; Sale si se ha pulsado una tecla
-0025   0AF4           00084         INCF  NUMTECLA,F   ; Incrementa n£mero de tecla
-                      00085 
-0026   1E8C           00086         BTFSS PORTA,5           ; Columna 2=0?
-0027   2833           00087         GOTO  TECLA_ON          ; Sale si se ha pulsado una tecla
-0028   0AF4           00088         INCF  NUMTECLA,F        ; Incrementa n£mero de tecla
+0013   0020           00059         banksel PORTE
+0014   19F6           00060         BTFSC   BANDERAS, ALARMA_MOSTRAR
+0015   1490           00061         bsf     PORTE, RE1
+                      00062         
+0016   1DF6           00063         BTFSS   BANDERAS, ALARMA_MOSTRAR
+0017   1090           00064         bcf     PORTE, RE1
+                      00065         
+0018   0000           00066 SALIR   NOP
+0019   0027           00067         BANKSEL IOCAF           
+001A   0193           00068         CLRF    IOCAF
+001B   0020           00069         BANKSEL INTCON
+001C   100B           00070         BCF     INTCON,IOCIF            ; Se desactiva la bandera de interrupci¢n
+001D   110B           00071         BCF     INTCON,TMR0IF
+001E   0009           00072         RETFIE
+                      00073 
+001F   0000           00074 TECLA   NOP
+0020                  00075 NEW_SCAN    
+0020   01F4           00076         CLRF  NUMTECLA     ; Borra el contenido de numTecla
+0021   0AF4           00077         INCF  NUMTECLA,F   ; Inicializa numTecla
+0022   0020           00078         BANKSEL PORTA
+0023   30FE           00079         MOVLW 0xFE         ; Pone a 0 la primera Fila ( RA0 )
+0024   008C           00080         MOVWF PORTA
+0025   0000           00081         NOP                ; Espera estabilizar la se¤al
+                      00082            
+                      00083                            ;Rutina que verifica el estado de las columnas
+0026                  00084 CHK_COL
+                      00085                                   ;Verifica si se ha presionado alguna tecla
+0026   1E0C           00086         BTFSS PORTA,4       ; Columna 1=0?
+0027   2836           00087         GOTO  TECLA_ON     ; Sale si se ha pulsado una tecla
+0028   0AF4           00088         INCF  NUMTECLA,F   ; Incrementa n£mero de tecla
                       00089 
-0029   1F0C           00090         BTFSS PORTA,6           ; Columna 3=0?
-002A   2833           00091         GOTO  TECLA_ON          ; Sale si se ha pulsado una tecla
+0029   1E8C           00090         BTFSS PORTA,5           ; Columna 2=0?
+002A   2836           00091         GOTO  TECLA_ON          ; Sale si se ha pulsado una tecla
 002B   0AF4           00092         INCF  NUMTECLA,F        ; Incrementa n£mero de tecla
-                      00093             
-                      00094                                 ;Verifica si se ha recorrido todo el teclado
-002C   300D           00095         MOVLW 0x0D              ; N£mero total de teclas + 1
-002D   0674           00096         XORWF NUMTECLA,W        ; Realiza d'13' XOR numTecla
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE  3
+                      00093 
+002C   1F0C           00094         BTFSS PORTA,6           ; Columna 3=0?
+002D   2836           00095         GOTO  TECLA_ON          ; Sale si se ha pulsado una tecla
+002E   0AF4           00096         INCF  NUMTECLA,F        ; Incrementa n£mero de tecla
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-002E   1903           00097         BTFSC STATUS,Z          ; Verifica el estado de Z
-002F   281D           00098         GOTO  NEW_SCAN          ; Z=1?, Son iguales (full Scan) , Z=0?  
-                      00099                                 ;, Son diferentes,
-                      00100             
-0030                  00101 NEXT_COL    
-0030   1403           00102         BSF  STATUS,C           ; Enciende el carry para poner en "1" la FILA recorrida
-0031   0D8C           00103         RLF  PORTA,F            ;realiza corrimiento a la izquierda
-                      00104                                 ;, pone a cero la siguiente FILA
-0032   2823           00105         GOTO CHK_COL            ; Escanea la sig. COLUMNA
-                      00106  
-                      00107 ;Rutina que procesa la tecla capturada
-0033                  00108 TECLA_ON    
-                      00109                                 ;Rutinas que esperan a que se deje de presionar la tecla
-                      00110                                 ;Esto para evitar ECO
-0033   1E0C           00111 ESPERA1 BTFSS   PORTA,4         ;Si no se suelta la tecla de la COL 1
-0034   2833           00112         GOTO    ESPERA1                    ; vuelve a esperar.
-0035   1E8C           00113 ESPERA2 BTFSS   PORTA,5         ;Si no se suelta la tecla de la COL 2
-0036   2835           00114         GOTO    ESPERA2                    ;vuelve a esperar.
-0037   1F0C           00115 ESPERA3 BTFSS   PORTA,6         ;Si no se suelta la tecla de la COL 3
-0038   2837           00116         GOTO    ESPERA3                    ;vuelve a esperar.
-                      00117                                                   ;Una vez que dej¢ de presionar la tecla
-                      00118 
-0039   0874           00119         MOVF    NUMTECLA,W       ; Pone en W el valor de numTecla
-003A   2065           00120         CALL    CONV_TECLA_NUMERO       ; Llama a la rutina de conversi¢n A ASCII
-003B   00F5           00121         MOVWF   TEMP
-                      00122         
-003C   3A10           00123         xorlw   RESET_COMANDO
-003D   1903           00124         btfsc   STATUS, Z
-003E   2850           00125         goto    CONFIGURAR_RESET
+                      00097             
+                      00098                                 ;Verifica si se ha recorrido todo el teclado
+002F   300D           00099         MOVLW 0x0D              ; N£mero total de teclas + 1
+0030   0674           00100         XORWF NUMTECLA,W        ; Realiza d'13' XOR numTecla
+0031   1903           00101         BTFSC STATUS,Z          ; Verifica el estado de Z
+0032   2820           00102         GOTO  NEW_SCAN          ; Z=1?, Son iguales (full Scan) , Z=0?  
+                      00103                                 ;, Son diferentes,
+                      00104             
+0033                  00105 NEXT_COL    
+0033   1403           00106         BSF  STATUS,C           ; Enciende el carry para poner en "1" la FILA recorrida
+0034   0D8C           00107         RLF  PORTA,F            ;realiza corrimiento a la izquierda
+                      00108                                 ;, pone a cero la siguiente FILA
+0035   2826           00109         GOTO CHK_COL            ; Escanea la sig. COLUMNA
+                      00110  
+                      00111 ;Rutina que procesa la tecla capturada
+0036                  00112 TECLA_ON    
+                      00113                                 ;Rutinas que esperan a que se deje de presionar la tecla
+                      00114                                 ;Esto para evitar ECO
+0036   1E0C           00115 ESPERA1 BTFSS   PORTA,4         ;Si no se suelta la tecla de la COL 1
+0037   2836           00116         GOTO    ESPERA1                    ; vuelve a esperar.
+0038   1E8C           00117 ESPERA2 BTFSS   PORTA,5         ;Si no se suelta la tecla de la COL 2
+0039   2838           00118         GOTO    ESPERA2                    ;vuelve a esperar.
+003A   1F0C           00119 ESPERA3 BTFSS   PORTA,6         ;Si no se suelta la tecla de la COL 3
+003B   283A           00120         GOTO    ESPERA3                    ;vuelve a esperar.
+                      00121                                                   ;Una vez que dej¢ de presionar la tecla
+                      00122 
+003C   0874           00123         MOVF    NUMTECLA,W       ; Pone en W el valor de numTecla
+003D   2068           00124         CALL    CONV_TECLA_NUMERO       ; Llama a la rutina de conversi¢n A ASCII
+003E   00F5           00125         MOVWF   TEMP
                       00126         
-003F   0875           00127         MOVF    TEMP, W ; W cambia asi que usar de nuevo
-0040   3A20           00128         xorlw   START_PAUSA_COMANDO
-0041   1903           00129         btfsc   STATUS, Z
-0042   2852           00130         goto    ALTERNAR_PAUSA_START
-                      00131         
-0043   1CF6           00132         btfss   BANDERAS, PAUSADO ; Si esta pausado no modificar mas nada
-0044   0008           00133         return 
-                      00134         
-0045   11F6           00135         bcf     BANDERAS, ALARMA_MOSTRAR
-0046   1176           00136         bcf     BANDERAS, ALARMA_PENDIENTE
-                      00137                 
-0047   0872           00138         MOVF    Num3,W
-0048   00F3           00139         MOVWF   Num4
-0049   0871           00140         MOVF    Num2,W
-004A   00F2           00141         MOVWF   Num3
-004B   0870           00142         MOVF    Num1,W
-004C   00F1           00143         MOVWF   Num2
-004D   0875           00144         MOVF    TEMP,W
-004E   00F0           00145         MOVWF   Num1
-004F   0008           00146         RETURN
-                      00147 
-0050                  00148 CONFIGURAR_RESET
-0050   1476           00149         bsf     BANDERAS, REINICIO_PENDIENTE
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE  4
+003F   3A10           00127         xorlw   RESET_COMANDO
+0040   1903           00128         btfsc   STATUS, Z
+0041   2853           00129         goto    CONFIGURAR_RESET
+                      00130         
+0042   0875           00131         MOVF    TEMP, W ; W cambia asi que usar de nuevo
+0043   3A20           00132         xorlw   START_PAUSA_COMANDO
+0044   1903           00133         btfsc   STATUS, Z
+0045   2855           00134         goto    ALTERNAR_PAUSA_START
+                      00135         
+0046   1CF6           00136         btfss   BANDERAS, PAUSADO ; Si esta pausado no modificar mas nada
+0047   0008           00137         return 
+                      00138         
+0048   11F6           00139         bcf     BANDERAS, ALARMA_MOSTRAR
+0049   1176           00140         bcf     BANDERAS, ALARMA_PENDIENTE
+                      00141                 
+004A   0872           00142         MOVF    Num3,W
+004B   00F3           00143         MOVWF   Num4
+004C   0871           00144         MOVF    Num2,W
+004D   00F2           00145         MOVWF   Num3
+004E   0870           00146         MOVF    Num1,W
+004F   00F1           00147         MOVWF   Num2
+0050   0875           00148         MOVF    TEMP,W
+0051   00F0           00149         MOVWF   Num1
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0051   0008           00150         RETURN  
+0052   0008           00150         RETURN
                       00151 
-0052                  00152 ALTERNAR_PAUSA_START
-0052   14F9           00153         bsf     HELPER, PAUSADO ; Setear el bit a modificar
-0053   0879           00154         movf    HELPER, W       ; pasarlo a w
-0054   06F6           00155         xorwf   BANDERAS, F     ; xor operacion
-0055   0008           00156         return
-                      00157 ;Rutina de conversi¢n que retorna el valor  ASCII de
-                      00158 ;numTecla en W
-0056                  00159 CONV_7SEG
-0056   0782           00160         ADDWF PCL,1
-0057   343F           00161         RETLW   0x3F                            ; Linea 0 (no se utiliza)
-0058   3406           00162         RETLW   0x06                    ; Uno
-0059   345B           00163         RETLW   0x5B                    ; Dos
-005A   344F           00164         RETLW   0x4F                    ; Tres
-005B   3466           00165         RETLW   0x66                    ; Cuatro
-005C   346D           00166         RETLW   0x6D                    ; Cinco
-005D   347D           00167         RETLW   0x7D                    ; Seis
-005E   3407           00168         RETLW   0x07                    ; Siete
-005F   347F           00169         RETLW   0x7F                    ; Ocho
-0060   346F           00170         RETLW   0x6F                    ; Nueve
-0061   3420           00171         RETLW   0x20                    ; *
-0062   343F           00172         RETLW   0x3F                    ; Cero
-0063   3410           00173         RETLW   0x10                    ; #
-0064   0008           00174         RETURN
-                      00175 
-0065                  00176 CONV_TECLA_NUMERO
-0065   0782           00177         ADDWF PCL,1
-0066   3400           00178         RETLW   0x00                            ; Linea 0 (no se utiliza)
-0067   3401           00179         RETLW   0x01                    ; Uno
-0068   3402           00180         RETLW   0x02                    ; Dos
-0069   3403           00181         RETLW   0x03                    ; Tres
-006A   3404           00182         RETLW   0x04                    ; Cuatro
-006B   3405           00183         RETLW   0x05                    ; Cinco
-006C   3406           00184         RETLW   0x06                    ; Seis
-006D   3407           00185         RETLW   0x07                    ; Siete
-006E   3408           00186         RETLW   0x08                    ; Ocho
-006F   3409           00187         RETLW   0x09                    ; Nueve
-0070   3420           00188         RETLW   0x20                    ; *
-0071   3400           00189         RETLW   0x00                    ; Cero
-0072   3410           00190         RETLW   0x10                    ; #
-0073   0008           00191         RETURN
-                      00192                 
-0074                  00193 BARRIDO_LED
-0074   1403           00194         BSF  STATUS,C
-0075   0D8F           00195         RLF  PORTD,F
-0076   30EF           00196         MOVLW 0xEF              ; N£mero total de teclas + 1
-0077   060F           00197         XORWF PORTD,W           ; Realiza d'13' XOR numTecla
-0078   1D03           00198         BTFSS STATUS,Z          ; Verifica el estado de Z
-0079   2880           00199         GOTO  SIGUIENTE
-007A   300E           00200         MOVLW 0x0E              ; N£mero total de teclas + 1
-007B   008F           00201         MOVWF PORTD
-007C   0870           00202         MOVF  Num1,W
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE  5
+0053                  00152 CONFIGURAR_RESET
+0053   1476           00153         bsf     BANDERAS, REINICIO_PENDIENTE
+0054   0008           00154         RETURN  
+                      00155 
+0055                  00156 ALTERNAR_PAUSA_START
+0055   14F9           00157         bsf     HELPER, PAUSADO ; Setear el bit a modificar
+0056   0879           00158         movf    HELPER, W       ; pasarlo a w
+0057   06F6           00159         xorwf   BANDERAS, F     ; xor operacion
+0058   0008           00160         return
+                      00161 ;Rutina de conversi¢n que retorna el valor  ASCII de
+                      00162 ;numTecla en W
+0059                  00163 CONV_7SEG
+0059   0782           00164         ADDWF PCL,1
+005A   343F           00165         RETLW   0x3F                            ; Linea 0 (no se utiliza)
+005B   3406           00166         RETLW   0x06                    ; Uno
+005C   345B           00167         RETLW   0x5B                    ; Dos
+005D   344F           00168         RETLW   0x4F                    ; Tres
+005E   3466           00169         RETLW   0x66                    ; Cuatro
+005F   346D           00170         RETLW   0x6D                    ; Cinco
+0060   347D           00171         RETLW   0x7D                    ; Seis
+0061   3407           00172         RETLW   0x07                    ; Siete
+0062   347F           00173         RETLW   0x7F                    ; Ocho
+0063   346F           00174         RETLW   0x6F                    ; Nueve
+0064   3420           00175         RETLW   0x20                    ; *
+0065   343F           00176         RETLW   0x3F                    ; Cero
+0066   3410           00177         RETLW   0x10                    ; #
+0067   0008           00178         RETURN
+                      00179 
+0068                  00180 CONV_TECLA_NUMERO
+0068   0782           00181         ADDWF PCL,1
+0069   3400           00182         RETLW   0x00                            ; Linea 0 (no se utiliza)
+006A   3401           00183         RETLW   0x01                    ; Uno
+006B   3402           00184         RETLW   0x02                    ; Dos
+006C   3403           00185         RETLW   0x03                    ; Tres
+006D   3404           00186         RETLW   0x04                    ; Cuatro
+006E   3405           00187         RETLW   0x05                    ; Cinco
+006F   3406           00188         RETLW   0x06                    ; Seis
+0070   3407           00189         RETLW   0x07                    ; Siete
+0071   3408           00190         RETLW   0x08                    ; Ocho
+0072   3409           00191         RETLW   0x09                    ; Nueve
+0073   3420           00192         RETLW   0x20                    ; *
+0074   3400           00193         RETLW   0x00                    ; Cero
+0075   3410           00194         RETLW   0x10                    ; #
+0076   0008           00195         RETURN
+                      00196                 
+0077                  00197 BARRIDO_LED
+0077   1403           00198         BSF  STATUS,C
+0078   0D8F           00199         RLF  PORTD,F
+0079   30EF           00200         MOVLW 0xEF              ; N£mero total de teclas + 1
+007A   060F           00201         XORWF PORTD,W           ; Realiza d'13' XOR numTecla
+007B   1D03           00202         BTFSS STATUS,Z          ; Verifica el estado de Z
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-007D   2056           00203         CALL  CONV_7SEG
-007E   008E           00204         MOVWF PORTC
-007F   0008           00205         RETURN
-0080                  00206 SIGUIENTE
-0080   301D           00207         MOVLW 0x1D              ; N£mero total de teclas + 1
-0081   060F           00208         XORWF PORTD,W           ; Realiza d'13' XOR numTecla
-0082   1D03           00209         BTFSS STATUS,Z          ; Verifica el estado de Z
-0083   2888           00210         GOTO  N2
-0084   0871           00211         MOVF  Num2,W
-0085   2056           00212         CALL  CONV_7SEG
-0086   008E           00213         MOVWF PORTC
-0087   0008           00214         RETURN
-0088   303B           00215 N2      MOVLW 0x3B              ; N£mero total de teclas + 1
-0089   060F           00216         XORWF PORTD,W           ; Realiza d'13' XOR numTecla
-008A   1D03           00217         BTFSS STATUS,Z          ; Verifica el estado de Z
-008B   2890           00218         GOTO  N3
-008C   0872           00219         MOVF  Num3,W
-008D   2056           00220         CALL  CONV_7SEG
-008E   008E           00221         MOVWF PORTC
-008F   0008           00222         RETURN
-0090   3077           00223 N3      MOVLW 0x77              ; N£mero total de teclas + 1
-0091   060F           00224         XORWF PORTD,W           ; Realiza d'13' XOR numTecla
-0092   1D03           00225         BTFSS STATUS,Z          ; Verifica el estado de Z
-0093   0008           00226         RETURN
-0094   0873           00227         MOVF  Num4,W
-0095   2056           00228         CALL  CONV_7SEG
-0096   008E           00229         MOVWF PORTC
-0097   0008           00230         RETURN
-                      00231         
-0098                  00232 RESTART
-0098   3000           00233         MOVLW   0x00
-0099   00F0           00234         MOVWF   Num1
-009A   3000           00235         MOVLW   0x00
-009B   00F1           00236         MOVWF   Num2
-009C   3000           00237         MOVLW   0x00
-009D   00F2           00238         MOVWF   Num3
-009E   3000           00239         MOVLW   0x00
-009F   00F3           00240         MOVWF   Num4
-00A0   01F9           00241         CLRF    HELPER
-00A1   1076           00242         BCF     BANDERAS, REINICIO_PENDIENTE
-00A2   14F6           00243         BSF     BANDERAS, PAUSADO
-00A3   11F6           00244         bcf     BANDERAS, ALARMA_MOSTRAR
-00A4   1176           00245         bcf     BANDERAS, ALARMA_PENDIENTE
-00A5   0008           00246         RETURN
-                      00247 
-00A6                  00248 INICIO  
-00A6   0021           00249         BANKSEL OSCCON
-00A7   306F           00250         MOVLW   0x6F
-00A8   0099           00251         MOVWF   OSCCON     ; Reloj interno a 4 mhz sin PLL
-00A9   0023           00252         BANKSEL ANSELD
-00AA   018F           00253         CLRF    ANSELD     ; puertos D y E como digitales
-00AB   018C           00254         CLRF    ANSELA
-00AC   0190           00255         CLRF    ANSELE
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE  6
+007C   2883           00203         GOTO  SIGUIENTE
+007D   300E           00204         MOVLW 0x0E              ; N£mero total de teclas + 1
+007E   008F           00205         MOVWF PORTD
+007F   0870           00206         MOVF  Num1,W
+0080   2059           00207         CALL  CONV_7SEG
+0081   008E           00208         MOVWF PORTC
+0082   0008           00209         RETURN
+0083                  00210 SIGUIENTE
+0083   301D           00211         MOVLW 0x1D              ; N£mero total de teclas + 1
+0084   060F           00212         XORWF PORTD,W           ; Realiza d'13' XOR numTecla
+0085   1D03           00213         BTFSS STATUS,Z          ; Verifica el estado de Z
+0086   288B           00214         GOTO  N2
+0087   0871           00215         MOVF  Num2,W
+0088   2059           00216         CALL  CONV_7SEG
+0089   008E           00217         MOVWF PORTC
+008A   0008           00218         RETURN
+008B   303B           00219 N2      MOVLW 0x3B              ; N£mero total de teclas + 1
+008C   060F           00220         XORWF PORTD,W           ; Realiza d'13' XOR numTecla
+008D   1D03           00221         BTFSS STATUS,Z          ; Verifica el estado de Z
+008E   2893           00222         GOTO  N3
+008F   0872           00223         MOVF  Num3,W
+0090   2059           00224         CALL  CONV_7SEG
+0091   008E           00225         MOVWF PORTC
+0092   0008           00226         RETURN
+0093   3077           00227 N3      MOVLW 0x77              ; N£mero total de teclas + 1
+0094   060F           00228         XORWF PORTD,W           ; Realiza d'13' XOR numTecla
+0095   1D03           00229         BTFSS STATUS,Z          ; Verifica el estado de Z
+0096   0008           00230         RETURN
+0097   0873           00231         MOVF  Num4,W
+0098   2059           00232         CALL  CONV_7SEG
+0099   008E           00233         MOVWF PORTC
+009A   0008           00234         RETURN
+                      00235         
+009B                  00236 RESTART
+009B   3000           00237         MOVLW   0x00
+009C   00F0           00238         MOVWF   Num1
+009D   3000           00239         MOVLW   0x00
+009E   00F1           00240         MOVWF   Num2
+009F   3000           00241         MOVLW   0x00
+00A0   00F2           00242         MOVWF   Num3
+00A1   3000           00243         MOVLW   0x00
+00A2   00F3           00244         MOVWF   Num4
+00A3   01F9           00245         CLRF    HELPER
+00A4   1076           00246         BCF     BANDERAS, REINICIO_PENDIENTE
+00A5   14F6           00247         BSF     BANDERAS, PAUSADO
+00A6   11F6           00248         bcf     BANDERAS, ALARMA_MOSTRAR
+00A7   1176           00249         bcf     BANDERAS, ALARMA_PENDIENTE
+00A8   0008           00250         RETURN
+                      00251 
+00A9                  00252 INICIO  
+00A9   0021           00253         BANKSEL OSCCON
+00AA   306F           00254         MOVLW   0x6F
+00AB   0099           00255         MOVWF   OSCCON     ; Reloj interno a 4 mhz sin PLL
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00256         
-00AD   0021           00257         BANKSEL TRISD
-00AE   018F           00258         CLRF    TRISD      ; Puertos D y E como salidas
-00AF   018E           00259         CLRF    TRISC
-00B0   0190           00260         CLRF    TRISE
-00B1   30F0           00261         MOVLW   0xF0
-00B2   008C           00262         MOVWF   TRISA      ;RB0-RB3 como SALIDA, RB4-RB7 como ENTRADA
-                      00263         
-00B3   0020           00264         BANKSEL INTCON
-00B4   30E8           00265         MOVLW 0XE8
-00B5   008B           00266         MOVWF INTCON
-00B6   0021           00267         BANKSEL OPTION_REG
-00B7   3003           00268         MOVLW 0X03
-00B8   0095           00269         MOVWF OPTION_REG
-                      00270         
-00B9   0020           00271         BANKSEL TMR0            
-00BA   3000           00272         MOVLW   0x00
-00BB   0095           00273         MOVWF   TMR0
+00AC   0023           00256         BANKSEL ANSELD
+00AD   018F           00257         CLRF    ANSELD     ; puertos D y E como digitales
+00AE   018C           00258         CLRF    ANSELA
+00AF   0190           00259         CLRF    ANSELE
+                      00260         
+00B0   0021           00261         BANKSEL TRISD
+00B1   018F           00262         CLRF    TRISD      ; Puertos D y E como salidas
+00B2   018E           00263         CLRF    TRISC
+00B3   0190           00264         CLRF    TRISE
+00B4   30F0           00265         MOVLW   0xF0
+00B5   008C           00266         MOVWF   TRISA      ;RB0-RB3 como SALIDA, RB4-RB7 como ENTRADA
+                      00267         
+00B6   0020           00268         BANKSEL INTCON
+00B7   30E8           00269         MOVLW 0XE8
+00B8   008B           00270         MOVWF INTCON
+00B9   0021           00271         BANKSEL OPTION_REG
+00BA   3003           00272         MOVLW 0X03
+00BB   0095           00273         MOVWF OPTION_REG
                       00274         
-00BC   0024           00275         BANKSEL WPUA
-00BD   30F0           00276         MOVLW   0xF0
-00BE   008C           00277         MOVWF   WPUA
+00BC   0020           00275         BANKSEL TMR0            
+00BD   3000           00276         MOVLW   0x00
+00BE   0095           00277         MOVWF   TMR0
                       00278         
-00BF   0027           00279         BANKSEL IOCAP       
-00C0   3080           00280         MOVLW   0x80
-00C1   0091           00281         MOVWF   IOCAP   ; Activo las interrupciones por flanco de subida para RA7
-00C2   2098           00282         CALL    RESTART
-00C3   0020           00283         BANKSEL PORTC
-00C4   3040           00284         MOVLW   0x40
-00C5   008E           00285         MOVWF   PORTC
-00C6   0020           00286         BANKSEL PORTD
-00C7   300E           00287         MOVLW   0x0E
-00C8   008F           00288         MOVWF   PORTD
-00C9   0190           00289         CLRF    PORTE
-00CA   201C           00290         CALL    TECLA
-00CB   28CA           00291         GOTO $-1
-                      00292 
-00CC                  00293 Temporizador
-                      00294         ; Temporizador
-                      00295         ; Funciona pidiendo prestado numeros a las unidades mas altas
-                      00296         ; basicamente es una resta manual de todos los numeros
-                      00297         ; decimas pide prestado a segundos
-                      00298         ; segundos pide prestado a minutos
-                      00299         ; Si todas las unidades son cero entonces cambia a modo de alarma
-00CC   28CE           00300         goto TemporizadorNum1           
-00CD                  00301 TemporizadorFin
-00CD   0008           00302         return
-                      00303         
-00CE                  00304 TemporizadorNum1
-00CE   0870           00305         movf    Num1, W
-00CF   3A00           00306         xorlw   0x0
-00D0   1903           00307         btfsc   STATUS, Z       ; si son iguales cambia el numero
-00D1   28D4           00308         goto TemporizadorNum2
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE  7
+00BF   0024           00279         BANKSEL WPUA
+00C0   30F0           00280         MOVLW   0xF0
+00C1   008C           00281         MOVWF   WPUA
+                      00282         
+00C2   0027           00283         BANKSEL IOCAP       
+00C3   3080           00284         MOVLW   0x80
+00C4   0091           00285         MOVWF   IOCAP   ; Activo las interrupciones por flanco de subida para RA7
+00C5   209B           00286         CALL    RESTART
+00C6   0020           00287         BANKSEL PORTC
+00C7   3040           00288         MOVLW   0x40
+00C8   008E           00289         MOVWF   PORTC
+00C9   0020           00290         BANKSEL PORTD
+00CA   300E           00291         MOVLW   0x0E
+00CB   008F           00292         MOVWF   PORTD
+00CC   0190           00293         CLRF    PORTE
+00CD   201F           00294         CALL    TECLA
+00CE   28CD           00295         GOTO $-1
+                      00296 
+00CF                  00297 Temporizador
+                      00298         ; Temporizador
+                      00299         ; Funciona pidiendo prestado numeros a las unidades mas altas
+                      00300         ; basicamente es una resta manual de todos los numeros
+                      00301         ; decimas pide prestado a segundos
+                      00302         ; segundos pide prestado a minutos
+                      00303         ; Si todas las unidades son cero entonces cambia a modo de alarma
+00CF   28D1           00304         goto TemporizadorNum1           
+00D0                  00305 TemporizadorFin
+00D0   0008           00306         return
+                      00307         
+00D1                  00308 TemporizadorNum1
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-00D2   03F0           00309         decf Num1, F 
-00D3   28CD           00310         goto TemporizadorFin
-                      00311 
-00D4                  00312 TemporizadorNum2
-00D4   0871           00313         movf    Num2, W
-00D5   3A00           00314         xorlw   0x0
-00D6   1903           00315         btfsc   STATUS, Z       ; si son iguales cambia el numero
-00D7   28DB           00316         goto    TemporizadorNum3
-00D8   20ED           00317         call    CargarSegundosUnidad
-00D9   03F1           00318         decf    Num2, F 
-00DA   28CD           00319         goto    TemporizadorFin
-                      00320         
-00DB                  00321 TemporizadorNum3        
-00DB   0872           00322         movf    Num3, W
-00DC   3A00           00323         xorlw   0x0
-00DD   1903           00324         btfsc   STATUS, Z       ; si son iguales cambia el numero
-00DE   28E2           00325         goto    TemporizadorNum4
-00DF   20EB           00326         call    CargarSegundosDecima
-00E0   03F2           00327         decf    Num3, F 
-00E1   28CD           00328         goto    TemporizadorFin
-                      00329 
-00E2                  00330 TemporizadorNum4
-00E2   0873           00331         movf    Num4, W
-00E3   3A00           00332         xorlw   0x00
-00E4   1903           00333         btfsc   STATUS, Z       ; si son iguales cambia el numero
-00E5   28F0           00334         goto    CambiarAModoAlarma
-00E6   20E9           00335         call    CargarMinutosUnidad
-00E7   03F3           00336         decf    Num4, F 
-00E8   28CD           00337         goto    TemporizadorFin
-                      00338 
-                      00339 ; Manejar Numeros prestado
-00E9                  00340 CargarMinutosUnidad
-00E9   3009           00341         MOVLW   0X09
-00EA   00F2           00342         MOVWF   Num3
-00EB                  00343 CargarSegundosDecima
-00EB   3005           00344         MOVLW   0x05
-00EC   00F1           00345         MOVWF   Num2
-00ED                  00346 CargarSegundosUnidad
-00ED   3009           00347         MOVLW   0x09
-00EE   00F0           00348         MOVWF   Num1    
-00EF   0008           00349         return
-                      00350 
-00F0                  00351 CambiarAModoAlarma      
-00F0   14F6           00352         bsf BANDERAS, PAUSADO
-00F1   1576           00353         bsf BANDERAS, ALARMA_PENDIENTE
-00F2   15F6           00354         bsf BANDERAS, ALARMA_MOSTRAR
-00F3   0008           00355         return
-                      00356  
-00F4                  00357 ALTERNAR_MOSTRAR_ALARMA
-00F4   15F9           00358         bsf     HELPER, ALARMA_MOSTRAR  ; Setear el bit a modificar
-00F5   0879           00359         movf    HELPER, W       ; pasarlo a w
-00F6   06F6           00360         xorwf   BANDERAS, F     ; xor operacion
-00F7   0008           00361         return
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE  8
+00D1   0870           00309         movf    Num1, W
+00D2   3A00           00310         xorlw   0x0
+00D3   1903           00311         btfsc   STATUS, Z       ; si son iguales cambia el numero
+00D4   28D7           00312         goto TemporizadorNum2
+00D5   03F0           00313         decf Num1, F 
+00D6   28D0           00314         goto TemporizadorFin
+                      00315 
+00D7                  00316 TemporizadorNum2
+00D7   0871           00317         movf    Num2, W
+00D8   3A00           00318         xorlw   0x0
+00D9   1903           00319         btfsc   STATUS, Z       ; si son iguales cambia el numero
+00DA   28DE           00320         goto    TemporizadorNum3
+00DB   20F0           00321         call    CargarSegundosUnidad
+00DC   03F1           00322         decf    Num2, F 
+00DD   28D0           00323         goto    TemporizadorFin
+                      00324         
+00DE                  00325 TemporizadorNum3        
+00DE   0872           00326         movf    Num3, W
+00DF   3A00           00327         xorlw   0x0
+00E0   1903           00328         btfsc   STATUS, Z       ; si son iguales cambia el numero
+00E1   28E5           00329         goto    TemporizadorNum4
+00E2   20EE           00330         call    CargarSegundosDecima
+00E3   03F2           00331         decf    Num3, F 
+00E4   28D0           00332         goto    TemporizadorFin
+                      00333 
+00E5                  00334 TemporizadorNum4
+00E5   0873           00335         movf    Num4, W
+00E6   3A00           00336         xorlw   0x00
+00E7   1903           00337         btfsc   STATUS, Z       ; si son iguales cambia el numero
+00E8   28F3           00338         goto    CambiarAModoAlarma
+00E9   20EC           00339         call    CargarMinutosUnidad
+00EA   03F3           00340         decf    Num4, F 
+00EB   28D0           00341         goto    TemporizadorFin
+                      00342 
+                      00343 ; Manejar Numeros prestado
+00EC                  00344 CargarMinutosUnidad
+00EC   3009           00345         MOVLW   0X09
+00ED   00F2           00346         MOVWF   Num3
+00EE                  00347 CargarSegundosDecima
+00EE   3005           00348         MOVLW   0x05
+00EF   00F1           00349         MOVWF   Num2
+00F0                  00350 CargarSegundosUnidad
+00F0   3009           00351         MOVLW   0x09
+00F1   00F0           00352         MOVWF   Num1    
+00F2   0008           00353         return
+                      00354 
+00F3                  00355 CambiarAModoAlarma      
+00F3   01FA           00356         clrf CONTADOR_ALARMA
+00F4   01F8           00357         clrf CONTADOR_TIEMPO
+00F5   14F6           00358         bsf BANDERAS, PAUSADO
+00F6   1576           00359         bsf BANDERAS, ALARMA_PENDIENTE
+00F7   15F6           00360         bsf BANDERAS, ALARMA_MOSTRAR
+00F8   0008           00361         return
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00362         
-00F8                  00363 CONTROL_TEMPORIZADOR
-00F8   18F6           00364         btfsc BANDERAS, PAUSADO
-00F9   0008           00365         return; No esta funcionando el temporizador
-                      00366         ; Contando que cada interrupcion ocurre cada 0.004 segundos
-                      00367         ; entonces cada 250 interrupciones sera 1 segundo
-00FA   0AF8           00368         INCF CONTADOR_TIEMPO, F ; incrementa en 1
-00FB   0878           00369         MOVF CONTADOR_TIEMPO, W 
-00FC   3AFA           00370         xorlw 0xFA ; compara si es 250
-00FD   1D03           00371         btfss STATUS, Z
-00FE   0008           00372         return ; no lo es
-                      00373         
-00FF   01F8           00374         CLRF CONTADOR_TIEMPO ;Si lo es
-0100   20CC           00375         call Temporizador
-0101   0008           00376         return
-                      00377 
-0102                  00378 ENCENDER_MOTOR
-0102   0020           00379         banksel PORTE
-0103   1410           00380         bsf PORTE, RE0
-0104   0008           00381         return
-                      00382 
-0105                  00383 APAGAR_MOTOR
-0105   0020           00384         banksel PORTE
-0106   1010           00385         bcf PORTE, RE0
-0107   0008           00386         return
-                      00387         END
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE  9
+                      00362  
+00F9                  00363 ALTERNAR_MOSTRAR_ALARMA
+00F9   01F9           00364         clrf    HELPER
+00FA   15F9           00365         bsf     HELPER, ALARMA_MOSTRAR  ; Setear el bit a modificar
+00FB   0879           00366         movf    HELPER, W       ; pasarlo a w
+00FC   06F6           00367         xorwf   BANDERAS, F     ; xor operacion
+00FD   0008           00368         return
+                      00369         
+00FE                  00370 CONTROL_TEMPORIZADOR
+00FE   1976           00371         btfsc BANDERAS, ALARMA_PENDIENTE
+00FF   0008           00372         return 
+0100   18F6           00373         btfsc BANDERAS, PAUSADO
+0101   0008           00374         return; No esta funcionando el temporizador
+                      00375         ; Contando que cada interrupcion ocurre cada 0.004 segundos
+                      00376         ; entonces cada 250 interrupciones sera 1 segundo
+0102   0AF8           00377         INCF CONTADOR_TIEMPO, F ; incrementa en 1
+0103   0878           00378         MOVF CONTADOR_TIEMPO, W 
+0104   3AFA           00379         xorlw 0xFA ; compara si es 250
+0105   1D03           00380         btfss STATUS, Z
+0106   0008           00381         return ; no lo es
+                      00382         
+0107   01F8           00383         CLRF CONTADOR_TIEMPO ;Si lo es
+0108   20CF           00384         call Temporizador
+0109   0008           00385         return
+                      00386 
+010A                  00387 ENCENDER_MOTOR
+010A   0020           00388         banksel PORTE
+010B   1410           00389         bsf PORTE, RE0
+010C   0008           00390         return
+                      00391 
+010D                  00392 APAGAR_MOTOR
+010D   0020           00393         banksel PORTE
+010E   1010           00394         bcf PORTE, RE0
+010F   0008           00395         return
+                      00396 
+                      00397         
+0110                  00398 CONTROL_ALARMA
+0110   1D76           00399         btfss BANDERAS, ALARMA_PENDIENTE
+0111   0008           00400         return; No esta funcionando el temporizador
+                      00401         ; Contando que cada interrupcion ocurre cada 0.004 segundos
+                      00402         ; entonces cada 125 interrupciones sera 0.5 segundo
+0112   0AF8           00403         INCF CONTADOR_TIEMPO, F ; incrementa en 1
+0113   0878           00404         MOVF CONTADOR_TIEMPO, W 
+0114   3A7D           00405         xorlw 0x7D ; compara si es 125
+0115   1D03           00406         btfss STATUS, Z
+0116   0008           00407         return ; no lo es
+0117   01F8           00408         CLRF CONTADOR_TIEMPO ;Si lo es
+                      00409         
+0118   20F9           00410         call ALTERNAR_MOSTRAR_ALARMA
+                      00411         
+0119   0AFA           00412         INCF CONTADOR_ALARMA, F
+011A   087A           00413         MOVF CONTADOR_ALARMA, W
+011B   3A05           00414         xorlw 0x05; si esto llega a 5 significa que la alarma sono 3 veces
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+011C   1D03           00415         btfss STATUS, Z
+011D   0008           00416         return 
+                      00417         
+011E   01FA           00418         CLRF CONTADOR_ALARMA
+011F   209B           00419         call RESTART
+0120   0008           00420         return
+                      00421         END
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 10
 
 
 SYMBOL TABLE
@@ -487,8 +527,8 @@ ADRMD                             00000007
 AHEN                              00000001
 ALARMA_MOSTRAR                    3
 ALARMA_PENDIENTE                  2
-ALTERNAR_MOSTRAR_ALARMA           000000F4
-ALTERNAR_PAUSA_START              00000052
+ALTERNAR_MOSTRAR_ALARMA           000000F9
+ALTERNAR_PAUSA_START              00000055
 ANSA0                             00000000
 ANSA1                             00000001
 ANSA2                             00000002
@@ -502,7 +542,7 @@ ANSB2                             00000002
 ANSB3                             00000003
 ANSB4                             00000004
 ANSB5                             00000005
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 10
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 11
 
 
 SYMBOL TABLE
@@ -519,13 +559,13 @@ ANSELA                            0000018C
 ANSELB                            0000018D
 ANSELD                            0000018F
 ANSELE                            00000190
-APAGAR_MOTOR                      00000105
+APAGAR_MOTOR                      0000010D
 APFCON                            0000011D
 APFCON0                           0000011D
 APFCON1                           0000011D
 APFCON2                           0000011C
 BANDERAS                          00000076
-BARRIDO_LED                       00000074
+BARRIDO_LED                       00000077
 BAUD1CON                          0000019F
 BAUDCON                           0000019F
 BAUDCON1                          0000019F
@@ -561,7 +601,7 @@ C1IE                              00000005
 C1IF                              00000005
 C1INTN                            00000006
 C1INTP                            00000007
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 11
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 12
 
 
 SYMBOL TABLE
@@ -620,7 +660,7 @@ C3ZLF                             00000003
 C4HYS                             00000001
 C4IE                              00000002
 C4IF                              00000002
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 12
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 13
 
 
 SYMBOL TABLE
@@ -677,9 +717,9 @@ CCPR3L                            00000311
 CDAFVR0                           00000002
 CDAFVR1                           00000003
 CFGS                              00000006
-CHK_COL                           00000023
+CHK_COL                           00000026
 CHS0                              00000002
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 13
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 14
 
 
 SYMBOL TABLE
@@ -713,19 +753,20 @@ CM3CON1                           0000011F
 CM4CON0                           0000011A
 CM4CON1                           0000011B
 CMOUT                             00000115
-CONFIGURAR_RESET                  00000050
+CONFIGURAR_RESET                  00000053
 CONTADOR_ALARMA                   0000007A
 CONTADOR_TIEMPO                   00000078
-CONTROL_TEMPORIZADOR              000000F8
-CONV_7SEG                         00000056
-CONV_TECLA_NUMERO                 00000065
+CONTROL_ALARMA                    00000110
+CONTROL_TEMPORIZADOR              000000FE
+CONV_7SEG                         00000059
+CONV_TECLA_NUMERO                 00000068
 CREN                              00000004
 CSRC                              00000007
 C_SHAD                            00000000
-CambiarAModoAlarma                000000F0
-CargarMinutosUnidad               000000E9
-CargarSegundosDecima              000000EB
-CargarSegundosUnidad              000000ED
+CambiarAModoAlarma                000000F3
+CargarMinutosUnidad               000000EC
+CargarSegundosDecima              000000EE
+CargarSegundosUnidad              000000F0
 DACCON0                           00000118
 DACCON1                           00000119
 DACEN                             00000007
@@ -737,13 +778,13 @@ DACPSS1                           00000003
 DACR0                             00000000
 DACR1                             00000001
 DACR2                             00000002
-DACR3                             00000003
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 14
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 15
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+DACR3                             00000003
 DACR4                             00000004
 DACR5                             00000005
 DACR6                             00000006
@@ -770,10 +811,10 @@ EEDATL                            00000193
 EEIE                              00000004
 EEIF                              00000004
 EEPGD                             00000007
-ENCENDER_MOTOR                    00000102
-ESPERA1                           00000033
-ESPERA2                           00000035
-ESPERA3                           00000037
+ENCENDER_MOTOR                    0000010A
+ESPERA1                           00000036
+ESPERA2                           00000038
+ESPERA3                           0000003A
 F                                 00000001
 FERR                              00000002
 FREE                              00000004
@@ -796,17 +837,17 @@ GO                                00000001
 GO_NOT_DONE                       00000001
 HELPER                            00000079
 HFIOFL                            00000003
-HFIOFR                            00000004
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 15
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 16
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+HFIOFR                            00000004
 HFIOFS                            00000000
 INDF0                             00000000
 INDF1                             00000001
-INICIO                            000000A6
+INICIO                            000000A9
 INLVLA                            0000038C
 INLVLA0                           00000000
 INLVLA1                           00000001
@@ -855,13 +896,13 @@ INTF                              00000001
 IOCAF                             00000393
 IOCAF0                            00000000
 IOCAF1                            00000001
-IOCAF2                            00000002
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 16
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 17
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+IOCAF2                            00000002
 IOCAF3                            00000003
 IOCAF4                            00000004
 IOCAF5                            00000005
@@ -914,13 +955,13 @@ IOCBP6                            00000006
 IOCBP7                            00000007
 IOCCF                             00000399
 IOCCF0                            00000000
-IOCCF1                            00000001
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 17
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 18
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+IOCCF1                            00000001
 IOCCF2                            00000002
 IOCCF3                            00000003
 IOCCF4                            00000004
@@ -973,13 +1014,13 @@ LATB2                             00000002
 LATB3                             00000003
 LATB4                             00000004
 LATB5                             00000005
-LATB6                             00000006
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 18
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 19
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+LATB6                             00000006
 LATB7                             00000007
 LATC                              0000010E
 LATC0                             00000000
@@ -1018,10 +1059,10 @@ MSK4                              00000004
 MSK5                              00000005
 MSK6                              00000006
 MSK7                              00000007
-N2                                00000088
-N3                                00000090
-NEW_SCAN                          0000001D
-NEXT_COL                          00000030
+N2                                0000008B
+N3                                00000093
+NEW_SCAN                          00000020
+NEXT_COL                          00000033
 NOT_BOR                           00000000
 NOT_PD                            00000003
 NOT_POR                           00000001
@@ -1032,13 +1073,13 @@ NOT_T1SYNC                        00000002
 NOT_TO                            00000004
 NOT_WPUEN                         00000007
 NUMTECLA                          00000074
-Num1                              00000070
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 19
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 20
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+Num1                              00000070
 Num2                              00000071
 Num3                              00000072
 Num4                              00000073
@@ -1091,13 +1132,13 @@ OPA1SP                            00000006
 OPA2CON                           00000513
 OPA2EN                            00000007
 OPA2PCH0                          00000000
-OPA2PCH1                          00000001
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 20
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 21
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+OPA2PCH1                          00000001
 OPA2SP                            00000006
 OPTION_REG                        00000095
 OSCCON                            00000099
@@ -1150,13 +1191,13 @@ P1MDLEN                           00000007
 P1MDLPOL                          00000006
 P1MODE0                           00000000
 P1MODE1                           00000001
-P1MODE2                           00000002
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 21
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 22
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+P1MODE2                           00000002
 P1MODE3                           00000003
 P1MSRC0                           00000000
 P1MSRC1                           00000001
@@ -1209,13 +1250,13 @@ P1TDCIE                           00000005
 P1TDCIF                           00000001
 P1TOVIE                           00000007
 P1TOVIF                           00000003
-P1TPHIE                           00000006
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 22
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 23
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+P1TPHIE                           00000006
 P1TPHIF                           00000002
 P1TPRIE                           00000004
 P1TPRIF                           00000000
@@ -1268,13 +1309,13 @@ P2OEA                             00000000
 P2OEB                             00000001
 P2PHSC1                           00000001
 P2PHSC2                           00000002
-P2PHSC3                           00000003
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 23
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 24
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+P2PHSC3                           00000003
 P2PHSC4                           00000004
 P2PHSIN                           00000007
 P2PHST                            00000000
@@ -1327,13 +1368,13 @@ P3ASE                             00000007
 P3CPRE0                           00000004
 P3CPRE1                           00000005
 P3CSRC0                           00000000
-P3CSRC1                           00000001
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 24
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 25
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+P3CSRC1                           00000001
 P3DBFE                            00000005
 P3DBRE                            00000004
 P3DCPOL                           00000005
@@ -1386,13 +1427,13 @@ P3POLF                            00000005
 P3PRPOL                           00000006
 P3PRSC1                           00000001
 P3PRSC2                           00000002
-P3PRSC3                           00000003
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 25
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 26
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+P3PRSC3                           00000003
 P3PRSC4                           00000004
 P3PRSIN                           00000007
 P3PRST                            00000000
@@ -1445,13 +1486,13 @@ PORTC                             0000000E
 PORTD                             0000000F
 PORTE                             00000010
 PR2                               0000001B
-PS0                               00000000
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 26
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 27
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PS0                               00000000
 PS1                               00000001
 PS2                               00000002
 PSA                               00000003
@@ -1504,13 +1545,13 @@ PSMC1DC10                         00000002
 PSMC1DC11                         00000003
 PSMC1DC12                         00000004
 PSMC1DC13                         00000005
-PSMC1DC14                         00000006
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 27
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 28
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PSMC1DC14                         00000006
 PSMC1DC15                         00000007
 PSMC1DC2                          00000002
 PSMC1DC3                          00000003
@@ -1563,13 +1604,13 @@ PSMC1PR11                         00000003
 PSMC1PR12                         00000004
 PSMC1PR13                         00000005
 PSMC1PR14                         00000006
-PSMC1PR15                         00000007
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 28
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 29
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PSMC1PR15                         00000007
 PSMC1PR2                          00000002
 PSMC1PR3                          00000003
 PSMC1PR4                          00000004
@@ -1622,13 +1663,13 @@ PSMC2BLKF6                        00000006
 PSMC2BLKF7                        00000007
 PSMC2BLKR                         0000084B
 PSMC2BLKR0                        00000000
-PSMC2BLKR1                        00000001
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 29
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 30
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PSMC2BLKR1                        00000001
 PSMC2BLKR2                        00000002
 PSMC2BLKR3                        00000003
 PSMC2BLKR4                        00000004
@@ -1681,13 +1722,13 @@ PSMC2FEBS                         00000839
 PSMC2FFA                          0000084D
 PSMC2FFA0                         00000000
 PSMC2FFA1                         00000001
-PSMC2FFA2                         00000002
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 30
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 31
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PSMC2FFA2                         00000002
 PSMC2FFA3                         00000003
 PSMC2INT                          00000840
 PSMC2LD                           00000006
@@ -1740,13 +1781,13 @@ PSMC2SIF                          00000001
 PSMC2STR0                         0000084E
 PSMC2STR1                         0000084F
 PSMC2SYNC                         00000833
-PSMC2TIE                          00000005
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 31
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 32
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PSMC2TIE                          00000005
 PSMC2TIF                          00000005
 PSMC2TMR                          00000847
 PSMC2TMR0                         00000000
@@ -1799,13 +1840,13 @@ PSMC3DBF3                         00000003
 PSMC3DBF4                         00000004
 PSMC3DBF5                         00000005
 PSMC3DBF6                         00000006
-PSMC3DBF7                         00000007
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 32
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 33
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PSMC3DBF7                         00000007
 PSMC3DBR                          00000869
 PSMC3DBR0                         00000000
 PSMC3DBR1                         00000001
@@ -1858,13 +1899,13 @@ PSMC3PH15                         00000007
 PSMC3PH2                          00000002
 PSMC3PH3                          00000003
 PSMC3PH4                          00000004
-PSMC3PH5                          00000005
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 33
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 34
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PSMC3PH5                          00000005
 PSMC3PH6                          00000006
 PSMC3PH7                          00000007
 PSMC3PH8                          00000000
@@ -1917,13 +1958,13 @@ PSMC3TMR6                         00000006
 PSMC3TMR7                         00000007
 PSMC3TMR8                         00000000
 PSMC3TMR9                         00000001
-PSMC3TMRH                         00000868
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 34
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 35
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PSMC3TMRH                         00000868
 PSMC3TMRL                         00000867
 RA0                               00000000
 RA1                               00000001
@@ -1974,20 +2015,20 @@ RE2                               00000002
 RE3                               00000003
 REINICIO_PENDIENTE                0
 RESET_COMANDO                     0x10
-RESTART                           00000098
+RESTART                           0000009B
 RSEN                              00000001
-RX9                               00000006
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 35
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 36
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RX9                               00000006
 RX9D                              00000000
 RXSEL                             00000001
 R_NOT_W                           00000002
 S                                 00000003
-SALIR                             00000015
+SALIR                             00000018
 SBCDE                             00000002
 SBOREN                            00000007
 SCIE                              00000005
@@ -2000,7 +2041,7 @@ SDISEL                            00000003
 SDOSEL                            00000005
 SEN                               00000000
 SENDB                             00000003
-SIGUIENTE                         00000080
+SIGUIENTE                         00000083
 SLRCONA                           0000030C
 SLRCONA0                          00000000
 SLRCONA1                          00000001
@@ -2035,13 +2076,13 @@ SLRCOND2                          00000002
 SLRCOND3                          00000003
 SLRCOND4                          00000004
 SLRCOND5                          00000005
-SLRCOND6                          00000006
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 36
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 37
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SLRCOND6                          00000006
 SLRCOND7                          00000007
 SLRCONE                           00000310
 SLRCONE0                          00000000
@@ -2094,13 +2135,13 @@ SSP1MSK7                          00000007
 SSP1STAT                          00000214
 SSPADD                            00000212
 SSPBUF                            00000211
-SSPCON                            00000215
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 37
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 38
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SSPCON                            00000215
 SSPCON2                           00000216
 SSPCON3                           00000217
 SSPEN                             00000005
@@ -2143,8 +2184,8 @@ T2OUTPS0                          00000003
 T2OUTPS1                          00000004
 T2OUTPS2                          00000005
 T2OUTPS3                          00000006
-TECLA                             0000001C
-TECLA_ON                          00000033
+TECLA                             0000001F
+TECLA_ON                          00000036
 TEMP                              00000075
 TMR0                              00000015
 TMR0CS                            00000005
@@ -2153,13 +2194,13 @@ TMR0IF                            00000002
 TMR0SE                            00000004
 TMR1                              00000016
 TMR1CS0                           00000006
-TMR1CS1                           00000007
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 38
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 39
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TMR1CS1                           00000007
 TMR1GE                            00000007
 TMR1GIE                           00000007
 TMR1GIF                           00000007
@@ -2212,13 +2253,13 @@ TRISD2                            00000002
 TRISD3                            00000003
 TRISD4                            00000004
 TRISD5                            00000005
-TRISD6                            00000006
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 39
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 40
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRISD6                            00000006
 TRISD7                            00000007
 TRISE                             00000090
 TRISE0                            00000000
@@ -2244,12 +2285,12 @@ TXREG1                            0000019A
 TXSEL                             00000002
 TXSTA                             0000019E
 TXSTA1                            0000019E
-Temporizador                      000000CC
-TemporizadorFin                   000000CD
-TemporizadorNum1                  000000CE
-TemporizadorNum2                  000000D4
-TemporizadorNum3                  000000DB
-TemporizadorNum4                  000000E2
+Temporizador                      000000CF
+TemporizadorFin                   000000D0
+TemporizadorNum1                  000000D1
+TemporizadorNum2                  000000D7
+TemporizadorNum3                  000000DE
+TemporizadorNum4                  000000E5
 UA                                00000001
 VREGCON                           00000197
 VREGPM                            00000001
@@ -2271,13 +2312,13 @@ WPUA5                             00000005
 WPUA6                             00000006
 WPUA7                             00000007
 WPUB                              0000020D
-WPUB0                             00000000
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 40
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 41
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+WPUB0                             00000000
 WPUB1                             00000001
 WPUB2                             00000002
 WPUB3                             00000003
@@ -2330,13 +2371,13 @@ _CPD_OFF                          0000FFFF
 _CPD_ON                           0000FEFF
 _CP_OFF                           0000FFFF
 _CP_ON                            0000FF7F
-_DEVID1                           00008006
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 41
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 42
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_DEVID1                           00008006
 _FCMEN_OFF                        0000DFFF
 _FCMEN_ON                         0000FFFF
 _FOSC_ECH                         0000FFFF
@@ -2377,27 +2418,23 @@ _WRT_HALF                         0000FFFD
 _WRT_OFF                          0000FFFF
 __16F1787                         00000001
 __DEBUG                           1
+MPASM  5.51                          MAIN.ASM   3-21-2023  1:38:16         PAGE 43
 
 
 MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
 
 0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
 0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
-MPASM  5.51                          MAIN.ASM   3-21-2023  1:17:34         PAGE 42
-
-
-MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
-
-
 0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
 00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
-0100 : XXXXXXXX-------- ---------------- ---------------- ----------------
+0100 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX X--------------- ----------------
 8000 : -------XX------- ---------------- ---------------- ----------------
 
 All other memory blocks unused.
 
-Program Memory Words Used:   263
-Program Memory Words Free:  7929
+Program Memory Words Used:   288
+Program Memory Words Free:  7904
 
 
 Errors   :     0

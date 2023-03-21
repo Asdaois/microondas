@@ -42,6 +42,10 @@ CONTADOR_ALARMA EQU 0X7A
 	BTFSC	INTCON, TMR0IF		; Interrupci¢n por cambio de nivel?
 	CALL	CONTROL_TEMPORIZADOR
 	
+	banksel INTCON
+	BTFSC	INTCON, TMR0IF		; Interrupci¢n por cambio de nivel?
+	CALL	CONTROL_ALARMA
+	
 	BANKSEL IOCAF		
 	BTFSC	BANDERAS, REINICIO_PENDIENTE
 	CALL	RESTART
@@ -349,18 +353,23 @@ CargarSegundosUnidad
 	return
 
 CambiarAModoAlarma	
+	clrf CONTADOR_ALARMA
+	clrf CONTADOR_TIEMPO
 	bsf BANDERAS, PAUSADO
 	bsf BANDERAS, ALARMA_PENDIENTE
 	bsf BANDERAS, ALARMA_MOSTRAR
 	return
  
 ALTERNAR_MOSTRAR_ALARMA
+	clrf	HELPER
 	bsf 	HELPER, ALARMA_MOSTRAR	; Setear el bit a modificar
 	movf	HELPER, W	; pasarlo a w
 	xorwf 	BANDERAS, F	; xor operacion
 	return
 	
 CONTROL_TEMPORIZADOR
+	btfsc BANDERAS, ALARMA_PENDIENTE
+	return 
         btfsc BANDERAS, PAUSADO
         return; No esta funcionando el temporizador
 	; Contando que cada interrupcion ocurre cada 0.004 segundos
@@ -383,5 +392,30 @@ ENCENDER_MOTOR
 APAGAR_MOTOR
 	banksel PORTE
 	bcf PORTE, RE0
+	return
+
+	
+CONTROL_ALARMA
+        btfss BANDERAS, ALARMA_PENDIENTE
+        return; No esta funcionando el temporizador
+	; Contando que cada interrupcion ocurre cada 0.004 segundos
+	; entonces cada 125 interrupciones sera 0.5 segundo
+	INCF CONTADOR_TIEMPO, F ; incrementa en 1
+	MOVF CONTADOR_TIEMPO, W 
+	xorlw 0x7D ; compara si es 125
+	btfss STATUS, Z
+	return ; no lo es
+	CLRF CONTADOR_TIEMPO ;Si lo es
+	
+	call ALTERNAR_MOSTRAR_ALARMA
+	
+	INCF CONTADOR_ALARMA, F
+	MOVF CONTADOR_ALARMA, W
+	xorlw 0x05; si esto llega a 5 significa que la alarma sono 3 veces
+	btfss STATUS, Z
+	return 
+	
+	CLRF CONTADOR_ALARMA
+	call RESTART
 	return
 	END

@@ -1,12 +1,12 @@
 MPLINK 4.49, Linker
-Linker Map File - Created Tue Mar 21 01:17:35 2023
+Linker Map File - Created Tue Mar 21 01:38:18 2023
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
                 ---------  ---------  ---------  ---------  ---------
                    .org_0       code   0x000000    program   0x000000
                    .org_1       code   0x000000    program   0x000002
-                   .org_2       code   0x000004    program   0x000208
+                   .org_2       code   0x000004    program   0x00023a
       .config_8007_MAIN.O       code   0x008007    program   0x000002
       .config_8008_MAIN.O       code   0x008008    program   0x000002
 
@@ -16,86 +16,88 @@ Linker Map File - Created Tue Mar 21 01:17:35 2023
                                Start         End      
                            ---------   ---------      
                             0x000000    0x000000      
-                            0x000004    0x000107      
+                            0x000004    0x000120      
                             0x008007    0x008008      
-            263 out of 8455 program addresses used, program memory utilization is 3%
+            288 out of 8455 program addresses used, program memory utilization is 3%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-  ALTERNAR_MOSTRAR_ALARMA   0x0000f4    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-     ALTERNAR_PAUSA_START   0x000052    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-             APAGAR_MOTOR   0x000105    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-              BARRIDO_LED   0x000074    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  CHK_COL   0x000023    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         CONFIGURAR_RESET   0x000050    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-     CONTROL_TEMPORIZADOR   0x0000f8    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                CONV_7SEG   0x000056    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-        CONV_TECLA_NUMERO   0x000065    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-       CambiarAModoAlarma   0x0000f0    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-      CargarMinutosUnidad   0x0000e9    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-     CargarSegundosDecima   0x0000eb    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-     CargarSegundosUnidad   0x0000ed    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-           ENCENDER_MOTOR   0x000102    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA1   0x000033    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA2   0x000035    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA3   0x000037    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                   INICIO   0x0000a6    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                       N2   0x000088    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                       N3   0x000090    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 NEW_SCAN   0x00001d    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 NEXT_COL   0x000030    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  RESTART   0x000098    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                    SALIR   0x000015    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                SIGUIENTE   0x000080    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                    TECLA   0x00001c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 TECLA_ON   0x000033    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-             Temporizador   0x0000cc    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-          TemporizadorFin   0x0000cd    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         TemporizadorNum1   0x0000ce    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         TemporizadorNum2   0x0000d4    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         TemporizadorNum3   0x0000db    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         TemporizadorNum4   0x0000e2    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+  ALTERNAR_MOSTRAR_ALARMA   0x0000f9    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+     ALTERNAR_PAUSA_START   0x000055    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+             APAGAR_MOTOR   0x00010d    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+              BARRIDO_LED   0x000077    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  CHK_COL   0x000026    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         CONFIGURAR_RESET   0x000053    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+           CONTROL_ALARMA   0x000110    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+     CONTROL_TEMPORIZADOR   0x0000fe    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                CONV_7SEG   0x000059    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+        CONV_TECLA_NUMERO   0x000068    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+       CambiarAModoAlarma   0x0000f3    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+      CargarMinutosUnidad   0x0000ec    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+     CargarSegundosDecima   0x0000ee    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+     CargarSegundosUnidad   0x0000f0    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+           ENCENDER_MOTOR   0x00010a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA1   0x000036    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA2   0x000038    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA3   0x00003a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                   INICIO   0x0000a9    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N2   0x00008b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N3   0x000093    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEW_SCAN   0x000020    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEXT_COL   0x000033    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  RESTART   0x00009b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    SALIR   0x000018    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                SIGUIENTE   0x000083    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    TECLA   0x00001f    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 TECLA_ON   0x000036    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+             Temporizador   0x0000cf    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+          TemporizadorFin   0x0000d0    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         TemporizadorNum1   0x0000d1    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         TemporizadorNum2   0x0000d7    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         TemporizadorNum3   0x0000de    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         TemporizadorNum4   0x0000e5    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
 
 
 
                               Symbols - Sorted by Address
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                    SALIR   0x000015    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                    TECLA   0x00001c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 NEW_SCAN   0x00001d    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  CHK_COL   0x000023    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 NEXT_COL   0x000030    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                 TECLA_ON   0x000033    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA1   0x000033    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA2   0x000035    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  ESPERA3   0x000037    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         CONFIGURAR_RESET   0x000050    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-     ALTERNAR_PAUSA_START   0x000052    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                CONV_7SEG   0x000056    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-        CONV_TECLA_NUMERO   0x000065    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-              BARRIDO_LED   0x000074    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                SIGUIENTE   0x000080    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                       N2   0x000088    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                       N3   0x000090    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                  RESTART   0x000098    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-                   INICIO   0x0000a6    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-             Temporizador   0x0000cc    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-          TemporizadorFin   0x0000cd    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         TemporizadorNum1   0x0000ce    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         TemporizadorNum2   0x0000d4    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         TemporizadorNum3   0x0000db    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         TemporizadorNum4   0x0000e2    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-      CargarMinutosUnidad   0x0000e9    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-     CargarSegundosDecima   0x0000eb    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-     CargarSegundosUnidad   0x0000ed    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-       CambiarAModoAlarma   0x0000f0    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-  ALTERNAR_MOSTRAR_ALARMA   0x0000f4    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-     CONTROL_TEMPORIZADOR   0x0000f8    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-           ENCENDER_MOTOR   0x000102    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-             APAGAR_MOTOR   0x000105    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    SALIR   0x000018    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                    TECLA   0x00001f    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEW_SCAN   0x000020    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  CHK_COL   0x000026    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 NEXT_COL   0x000033    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA1   0x000036    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                 TECLA_ON   0x000036    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA2   0x000038    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  ESPERA3   0x00003a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         CONFIGURAR_RESET   0x000053    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+     ALTERNAR_PAUSA_START   0x000055    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                CONV_7SEG   0x000059    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+        CONV_TECLA_NUMERO   0x000068    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+              BARRIDO_LED   0x000077    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                SIGUIENTE   0x000083    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N2   0x00008b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                       N3   0x000093    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                  RESTART   0x00009b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+                   INICIO   0x0000a9    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+             Temporizador   0x0000cf    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+          TemporizadorFin   0x0000d0    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         TemporizadorNum1   0x0000d1    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         TemporizadorNum2   0x0000d7    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         TemporizadorNum3   0x0000de    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         TemporizadorNum4   0x0000e5    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+      CargarMinutosUnidad   0x0000ec    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+     CargarSegundosDecima   0x0000ee    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+     CargarSegundosUnidad   0x0000f0    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+       CambiarAModoAlarma   0x0000f3    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+  ALTERNAR_MOSTRAR_ALARMA   0x0000f9    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+     CONTROL_TEMPORIZADOR   0x0000fe    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+           ENCENDER_MOTOR   0x00010a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+             APAGAR_MOTOR   0x00010d    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+           CONTROL_ALARMA   0x000110    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
 
 
