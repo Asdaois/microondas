@@ -116,7 +116,7 @@ CONFIGURAR_RESET
 ;numTecla en W
 CONV_7SEG
         ADDWF PCL,1
-        NOP				; Linea 0 (no se utiliza)
+        RETLW	0x3F				; Linea 0 (no se utiliza)
         RETLW	0x06			; Uno
 	RETLW	0x5B			; Dos
 	RETLW	0x4F			; Tres
@@ -188,13 +188,13 @@ N3	MOVLW 0x77              ; N£mero total de teclas + 1
 	RETURN
 	
 RESTART
-	MOVLW	0x40
+	MOVLW	0x00
 	MOVWF	Num1
-	MOVLW	0x40
+	MOVLW	0x00
 	MOVWF	Num2
-	MOVLW	0x40
+	MOVLW	0x00
 	MOVWF	Num3
-	MOVLW	0x40
+	MOVLW	0x00
 	MOVWF	Num4
 	BCF	BANDERAS, REINICIO_PENDIENTE
 	RETURN
@@ -231,14 +231,7 @@ INICIO
 	BANKSEL IOCAP	    
 	MOVLW	0x80
 	MOVWF	IOCAP	; Activo las interrupciones por flanco de subida para RA7
-	MOVLW	0x40
-	MOVWF	Num1
-	MOVLW	0x40
-	MOVWF	Num2
-	MOVLW	0x40
-	MOVWF	Num3
-	MOVLW	0x40
-	MOVWF	Num4
+	CALL	RESTART
 	BANKSEL PORTC
 	MOVLW	0x40
 	MOVWF	PORTC
