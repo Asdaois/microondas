@@ -20,6 +20,7 @@ NUMTECLA	EQU 0x74 ;             variable usada para guardar el numero asignado a
 TEMP		EQU 0x75
 BANDERAS	EQU 0x76
 CONTADOR_TIEMPO	EQU 0x78
+HELPER		EQU 0x79
 
 #define REINICIO_PENDIENTE 0
 #define PAUSADO 1
@@ -106,11 +107,12 @@ ESPERA3	BTFSS   PORTA,6         ;Si no se suelta la tecla de la COL 3
 	btfsc 	STATUS, Z
 	goto 	CONFIGURAR_RESET
 	
+	MOVF	TEMP, W ; W cambia asi que usar de nuevo
 	xorlw  	START_PAUSA_COMANDO
 	btfsc 	STATUS, Z
 	goto 	ALTERNAR_PAUSA_START
 	
-	btfss	BANDERAS, PAUSADO
+	btfss	BANDERAS, PAUSADO ; Si esta pausado no modificar mas nada
 	return 
 		
 	MOVF   	Num3,W
@@ -128,14 +130,11 @@ CONFIGURAR_RESET
 	RETURN	
 
 ALTERNAR_PAUSA_START
-	btfss	BANDERAS, PAUSADO
-	goto 	PAUSAR_TEMPORIZADOR
-	bcf	BANDERAS, PAUSADO
+	clrf 	HELPER	; Limpiar helper
+	bsf 	HELPER, PAUSADO	; Setear el bit a modificar
+	movf	HELPER, W	; pasarlo a w
+	xorwf 	BANDERAS, F	; xor operacion
 	return
-	
-PAUSAR_TEMPORIZADOR
-	bsf	BANDERAS, PAUSADO
-	return	
 ;Rutina de conversi¢n que retorna el valor  ASCII de
 ;numTecla en W
 CONV_7SEG

@@ -1,5 +1,5 @@
 MPLINK 4.49, Linker
-Linker Map File - Created Tue Mar 21 00:44:59 2023
+Linker Map File - Created Tue Mar 21 00:53:19 2023
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -25,10 +25,10 @@ Linker Map File - Created Tue Mar 21 00:44:59 2023
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-     ALTERNAR_PAUSA_START   0x000046    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+     ALTERNAR_PAUSA_START   0x000047    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
               BARRIDO_LED   0x00006a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
                   CHK_COL   0x00001a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         CONFIGURAR_RESET   0x000044    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         CONFIGURAR_RESET   0x000045    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
      CONTROL_TEMPORIZADOR   0x0000e6    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
                 CONV_7SEG   0x00004c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
         CONV_TECLA_NUMERO   0x00005b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
@@ -44,7 +44,6 @@ Linker Map File - Created Tue Mar 21 00:44:59 2023
                        N3   0x000086    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
                  NEW_SCAN   0x000014    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
                  NEXT_COL   0x000027    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-      PAUSAR_TEMPORIZADOR   0x00004a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
                   RESTART   0x00008e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
                     SALIR   0x00000c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
                 SIGUIENTE   0x000076    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
@@ -71,9 +70,8 @@ Linker Map File - Created Tue Mar 21 00:44:59 2023
                   ESPERA1   0x00002a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
                   ESPERA2   0x00002c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
                   ESPERA3   0x00002e    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-         CONFIGURAR_RESET   0x000044    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-     ALTERNAR_PAUSA_START   0x000046    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
-      PAUSAR_TEMPORIZADOR   0x00004a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+         CONFIGURAR_RESET   0x000045    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
+     ALTERNAR_PAUSA_START   0x000047    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
                 CONV_7SEG   0x00004c    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
         CONV_TECLA_NUMERO   0x00005b    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
               BARRIDO_LED   0x00006a    program     static C:\Users\josex\projects\assembler\microondas\src\main.asm
