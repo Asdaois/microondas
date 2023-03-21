@@ -19,21 +19,25 @@ Num4		EQU 0x73
 NUMTECLA	EQU 0x74 ;             variable usada para guardar el numero asignado a cada tecla
 TEMP		EQU 0x75
 BANDERAS	EQU 0x76
+CONTADOR_TIEMPO	EQU 0x78
 
 #define REINICIO_PENDIENTE 0
-#define DESCENDIENDO 1
-#define PAUSADO 2
-#define ALARMA_ACTIVADA
+#define PAUSADO 1
 
 #define RESET_COMANDO 0x10
+#define START_PAUSA_COMANDO 0x20
 ; Inicio del programa
  	ORG	0x00
 	GOTO	INICIO
 	ORG	0x04			; Vector de interrupci¢n
 	BANKSEL INTCON			
-	BTFSC	INTCON, TMR0IF		; Interrupci¢n por cambio de nivel?
+	BTFSC	INTCON, TMR0IF	; Interrupci¢n por timer0?
 	CALL	BARRIDO_LED
-
+	
+	
+	BTFSC	INTCON, TMR0IF		; Interrupci¢n por cambio de nivel?
+	CALL	CONTROL_TEMPORIZADOR
+	
 	BANKSEL IOCAF		
 	BTFSC	BANDERAS, REINICIO_PENDIENTE
 	CALL	RESTART
@@ -94,27 +98,44 @@ ESPERA3	BTFSS   PORTA,6         ;Si no se suelta la tecla de la COL 3
 	GOTO    ESPERA3                    ;vuelve a esperar.
 			                          ;Una vez que dej¢ de presionar la tecla
 
-	MOVF   NUMTECLA,W       ; Pone en W el valor de numTecla
-	CALL   CONV_TECLA_NUMERO       ; Llama a la rutina de conversi¢n A ASCII
-	MOVWF  TEMP
+	MOVF   	NUMTECLA,W       ; Pone en W el valor de numTecla
+	CALL   	CONV_TECLA_NUMERO       ; Llama a la rutina de conversi¢n A ASCII
+	MOVWF  	TEMP
 	
-	xorlw  RESET_COMANDO
-	btfsc STATUS, Z
-	goto CONFIGURAR_RESET
+	xorlw  	RESET_COMANDO
+	btfsc 	STATUS, Z
+	goto 	CONFIGURAR_RESET
+	
+	xorlw  	START_PAUSA_COMANDO
+	btfsc 	STATUS, Z
+	goto 	ALTERNAR_PAUSA_START
+	
+	btfss	BANDERAS, PAUSADO
+	return 
 		
-	MOVF   Num3,W
-        MOVWF  Num4
-	MOVF   Num2,W
-        MOVWF  Num3
-	MOVF   Num1,W
-        MOVWF  Num2
-	MOVF   TEMP,W
-        MOVWF  Num1
+	MOVF   	Num3,W
+        MOVWF  	Num4
+	MOVF   	Num2,W
+        MOVWF  	Num3
+	MOVF   	Num1,W
+        MOVWF  	Num2
+	MOVF   	TEMP,W
+        MOVWF  	Num1
 	RETURN
 
 CONFIGURAR_RESET
-	bsf BANDERAS, REINICIO_PENDIENTE
+	bsf 	BANDERAS, REINICIO_PENDIENTE
 	RETURN	
+
+ALTERNAR_PAUSA_START
+	btfss	BANDERAS, PAUSADO
+	goto 	PAUSAR_TEMPORIZADOR
+	bcf	BANDERAS, PAUSADO
+	return
+	
+PAUSAR_TEMPORIZADOR
+	bsf	BANDERAS, PAUSADO
+	return	
 ;Rutina de conversi¢n que retorna el valor  ASCII de
 ;numTecla en W
 CONV_7SEG
@@ -129,7 +150,7 @@ CONV_7SEG
 	RETLW	0x07			; Siete
 	RETLW	0x7F			; Ocho
 	RETLW	0x6F     		; Nueve
-	RETLW	0x04			; *
+	RETLW	0x20			; *
 	RETLW	0x3F			; Cero
 	RETLW	0x10			; #
 	RETURN
@@ -200,6 +221,7 @@ RESTART
 	MOVLW	0x00
 	MOVWF	Num4
 	BCF	BANDERAS, REINICIO_PENDIENTE
+	BSF	BANDERAS, PAUSADO
 	RETURN
 
 INICIO	
@@ -286,7 +308,7 @@ TemporizadorNum3
 
 TemporizadorNum4
 	movf	Num4, W
-	xorlw	0x0
+	xorlw	0x00
 	btfsc 	STATUS, Z 	; si son iguales cambia el numero
 	goto 	CambiarAModoAlarma
 	call 	CargarMinutosUnidad
@@ -295,19 +317,34 @@ TemporizadorNum4
 
 ; Manejar Numeros prestado
 CargarMinutosUnidad
-	MOVLW	0X9
-	MOVF	Num3
+	MOVLW	0X09
+	MOVWF	Num3
 CargarSegundosDecima
-	MOVLW	0x5
-	MOVF	Num2
+	MOVLW	0x05
+	MOVWF	Num2
 CargarSegundosUnidad
-	MOVLW 	0x9
-	MOVF	Num1	
+	MOVLW 	0x09
+	MOVWF	Num1	
 	return
 
 CambiarAModoAlarma
 	banksel PORTE
 	bsf PORTE, RE0
 	return
+
+CONTROL_TEMPORIZADOR
+        btfsc BANDERAS, PAUSADO
+        return; No esta funcionando el temporizador
+	; Contando que cada interrupcion ocurre cada 0.004 segundos
+	; entonces cada 250 interrupciones sera 1 segundo
+	INCF CONTADOR_TIEMPO, F ; incrementa en 1
+	MOVF CONTADOR_TIEMPO, W 
+	xorlw 0xFA ; compara si es 250
+	btfss STATUS, Z
+	return ; no lo es
 	
+	CLRF CONTADOR_TIEMPO ;Si lo es
+	
+	call Temporizador
+	return
 	END
